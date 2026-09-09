@@ -27,7 +27,8 @@ let userAnswers = [];
 let selectedCourse = "";
 
 let questionResults = [];
-
+let confirmationMode = false;
+let displayedChoiceSets = [];
 
 // =========================
 // JSON読み込み
@@ -118,6 +119,8 @@ function startQuiz(course) {
 
     selectedCourse = course;
 
+    confirmationMode = false;
+
     const quizScreen =
         document.getElementById("quiz-screen");
 
@@ -142,13 +145,6 @@ function startQuiz(course) {
         return;
     }
 
-
-    /*
-     * 問題順をランダム
-     *
-     * 元のJSONの順番は変更しないため、
-     * コピーしてからシャッフルする。
-     */
     currentQuestions =
         [...currentQuestions];
 
@@ -156,21 +152,17 @@ function startQuiz(course) {
         currentQuestions
     );
 
-
     currentQuestionIndex = 0;
+    confirmationMode = false;
+    displayedChoiceSets =
+        new Array(currentQuestions.length).fill(null);
 
-
-    /*
-     * 各問題の回答を保存
-     */
     userAnswers =
         new Array(
             currentQuestions.length
         ).fill(null);
 
-
     questionResults = [];
-
 
     document
         .getElementById("start-screen")
@@ -184,8 +176,9 @@ function startQuiz(course) {
         .getElementById("quiz-screen")
         .classList.remove("hidden");
 
-
     showQuestion();
+    createQuestionJumpButtons();
+
     window.scrollTo(0, 0);
 }
 
@@ -206,6 +199,9 @@ function showQuestion() {
         document.getElementById(
             "question-area"
         );
+
+  document.getElementById("quiz-screen").dataset.section =
+        question.section || "";
 
     questionArea.innerHTML = "";
 
@@ -262,10 +258,12 @@ function showQuestion() {
             );
         }
 
-if (
-    question.khmerQuestion &&
-    question.khmerQuestion.trim()
-) {
+        if (
+            question.section !== "Section1" &&
+            question.section !== "Section2" &&
+            question.khmerQuestion &&
+            question.khmerQuestion.trim()
+        ) {
 
     const khmerText =
         document.createElement("div");
@@ -282,7 +280,6 @@ if (
         khmerText
     );
 }
-
         addMedia(
             question.questionImage,
             questionContent,
@@ -402,7 +399,7 @@ if (
 
 
     updateNextButton();
-
+    updateQuestionJumpButtons();
 }
 
 // =========================
@@ -518,30 +515,6 @@ function showSubQuestions(
 
 
 // =========================
-// 通常問題表示
-// =========================
-
-function showNormalChoices(
-    question,
-    container
-) {
-
-    const choices =
-        prepareChoices(
-            question.choices || []
-        );
-
-
-    showChoices(
-        choices,
-        container,
-        currentQuestionIndex,
-        0
-    );
-}
-
-
-// =========================
 // 小問用選択肢作成
 // =========================
 
@@ -550,8 +523,23 @@ function createChoiceGroups(
     subQuestionCount
 ) {
 
-    const groups = [];
+    const questionIndex =
+        currentQuestionIndex;
 
+    /*
+     * すでに作成した選択肢があれば、
+     * 同じ順番をそのまま使用する。
+     */
+    if (
+        displayedChoiceSets[questionIndex]
+    ) {
+
+        return displayedChoiceSets[
+            questionIndex
+        ];
+    }
+
+    const groups = [];
 
     for (
         let i = 0;
@@ -560,7 +548,6 @@ function createChoiceGroups(
     ) {
 
         const choices = [];
-
 
         (question.choices || [])
             .forEach(choice => {
@@ -580,7 +567,6 @@ function createChoiceGroups(
                             value.trim()
                         );
 
-
                 const imageParts =
                     splitMediaValues(
                         choice.image
@@ -591,13 +577,11 @@ function createChoiceGroups(
                         choice.audio
                     );
 
-
                 let text =
                     textParts[i] || "";
 
                 let image =
                     imageParts[i] || "";
-
 
                 /*
                  * text に画像ファイル名が入っていたら
@@ -613,7 +597,6 @@ function createChoiceGroups(
 
                     text = "";
                 }
-
 
                 choices.push({
 
@@ -631,13 +614,20 @@ function createChoiceGroups(
 
             });
 
-
+        /*
+         * 最初に作ったときだけシャッフルする。
+         */
         groups.push(
             prepareChoices(choices)
         );
-
     }
 
+    /*
+     * この問題の選択肢順を保存する。
+     */
+    displayedChoiceSets[
+        questionIndex
+    ] = groups;
 
     return groups;
 }
@@ -655,17 +645,18 @@ function prepareChoices(choices) {
                 choice.image ||
                 choice.audio
             )
-            .map(choice => ({
-                ...choice
+            .map((choice, index) => ({
+                ...choice,
+                _choiceIndex:
+                    choice._choiceIndex !== undefined
+                        ? choice._choiceIndex
+                        : index
             }));
-
 
     shuffleArray(result);
 
-
     return result;
 }
-
 
 // =========================
 // 選択肢表示
@@ -684,6 +675,12 @@ function showChoices(
     list.className =
         "choice-list";
 
+    const question =
+        currentQuestions[questionIndex];
+
+    const isSection4 =
+        question &&
+        question.section === "Section4";
 
     choices.forEach(
         (choice, choiceIndex) => {
@@ -696,6 +693,19 @@ function showChoices(
             button.className =
                 "choice-button";
 
+            /*
+             * Section4で画像がある選択肢
+             * 元JFTと同じように、JavaScriptで
+             * 画像選択肢であることを明示する。
+             */
+            if (
+                isSection4 &&
+                choice.image
+            ) {
+                button.classList.add(
+                    "choice-with-image"
+                );
+            }
 
             const content =
                 document.createElement(
@@ -705,10 +715,6 @@ function showChoices(
             content.className =
                 "choice-content";
 
-
-            /*
-             * 選択肢の文字
-             */
             if (choice.text) {
 
                 const text =
@@ -726,10 +732,6 @@ function showChoices(
                 );
             }
 
-
-            /*
-             * 選択肢の画像・音声
-             */
             addMedia(
                 choice.image,
                 content,
@@ -742,45 +744,70 @@ function showChoices(
                 "choice"
             );
 
-
             button.appendChild(
                 content
             );
 
 
-            button.addEventListener(
-                "click",
-                () => {
+            /*
+             * すでに選んでいる答えを表示
+             */
 
-                    /*
-                     * 同じ小問の選択を解除
-                     */
-                    const buttons =
-                        list.querySelectorAll(
-                            ".choice-button"
+            const savedAnswer =
+                userAnswers[questionIndex] &&
+                userAnswers[questionIndex][subIndex];
+
+            if (
+                savedAnswer &&
+                savedAnswer.choiceIndex ===
+                    choice._choiceIndex
+            ) {
+
+                button.classList.add(
+                    "selected"
+                );
+            }
+
+
+            /*
+             * 確認中は選択肢を変更できない
+             */
+
+            if (!confirmationMode) {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const buttons =
+                            list.querySelectorAll(
+                                ".choice-button"
+                            );
+
+                        buttons.forEach(
+                            b =>
+                                b.classList.remove(
+                                    "selected"
+                                )
                         );
 
-                    buttons.forEach(
-                        b =>
-                            b.classList.remove(
-                                "selected"
-                            )
-                    );
+                        button.classList.add(
+                            "selected"
+                        );
 
+                        saveAnswer(
+                            questionIndex,
+                            subIndex,
+                            choice
+                        );
+                    }
+                );
 
-                    button.classList.add(
-                        "selected"
-                    );
+            } else {
 
+                button.disabled = true;
 
-                    saveAnswer(
-                        questionIndex,
-                        subIndex,
-                        choice
-                    );
-                }
-            );
-
+            }
 
             list.appendChild(
                 button
@@ -789,12 +816,10 @@ function showChoices(
         }
     );
 
-
     container.appendChild(
         list
     );
 }
-
 
 // =========================
 // 回答保存
@@ -812,15 +837,16 @@ function saveAnswer(
 
         userAnswers[questionIndex] =
             [];
-
     }
-
 
     userAnswers[
         questionIndex
     ][subIndex] = {
         correct:
-            choice.correct
+            choice.correct,
+
+        choiceIndex:
+            choice._choiceIndex
     };
 
 }
@@ -893,11 +919,94 @@ document
 
             } else {
 
-                calculateResult();
+                if (confirmationMode) {
+
+                    document
+                        .getElementById("quiz-screen")
+                        .classList.add("hidden");
+
+                    document
+                        .getElementById("result-screen")
+                        .classList.remove("hidden");
+
+                } else {
+
+                    calculateResult();
+
+                }
+
             }
         }
     );
     
+// =========================
+// 問題番号ジャンプボタン
+// =========================
+
+function createQuestionJumpButtons() {
+
+    const bar =
+        document.getElementById(
+            "question-jump-bar"
+        );
+
+    bar.innerHTML = "";
+
+    currentQuestions.forEach(
+        (question, index) => {
+
+            const button =
+                document.createElement("button");
+
+            button.className =
+                "question-jump-button";
+
+            button.textContent =
+                index + 1;
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    currentQuestionIndex =
+                        index;
+
+                    showQuestion();
+
+                    updateQuestionJumpButtons();
+
+                    window.scrollTo(0, 0);
+                }
+            );
+
+            bar.appendChild(button);
+
+        }
+    );
+
+    updateQuestionJumpButtons();
+}
+
+
+function updateQuestionJumpButtons() {
+
+    const buttons =
+        document.querySelectorAll(
+            ".question-jump-button"
+        );
+
+    buttons.forEach(
+        (button, index) => {
+
+            button.classList.toggle(
+                "current",
+                index === currentQuestionIndex
+            );
+
+        }
+    );
+}
+
 // =========================
 // 結果計算
 // =========================
@@ -1058,6 +1167,46 @@ function showResultScreen(
          window.scrollTo(0, 0);
 }
 
+// =========================
+// 確認モード
+// =========================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+document.addEventListener(
+    "click",
+    (event) => {
+
+        if (
+            event.target.id !==
+            "confirm-button"
+        ) {
+            return;
+        }
+
+        confirmationMode = true;
+
+        currentQuestionIndex = 0;
+
+        document
+            .getElementById("result-screen")
+            .classList.add("hidden");
+
+        document
+            .getElementById("quiz-screen")
+            .classList.remove("hidden");
+
+        showQuestion();
+
+        createQuestionJumpButtons();
+
+        window.scrollTo(0, 0);
+             }
+        );
+    }
+);
 
 // =========================
 // 最初に戻る

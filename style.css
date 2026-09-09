@@ -105,24 +105,16 @@ button {
 }
 
 
-/* =========================
-   S1・S2・S3
-   ========================= */
-
-#quiz-screen[data-course="A1ことば"] .question-content,
-#quiz-screen[data-course="A1かんじ"] .question-content,
-#quiz-screen[data-course="A1かいわ"] .question-content {
+#quiz-screen[data-section="Section1"] .question-content,
+#quiz-screen[data-section="Section2"] .question-content {
     width: 100%;
     height: 196px;
     min-height: 196px;
     overflow: hidden;
 }
 
-/* 問題文 */
-
-#quiz-screen[data-course="A1ことば"] .question-text,
-#quiz-screen[data-course="A1かんじ"] .question-text,
-#quiz-screen[data-course="A1かいわ"] .question-text {
+#quiz-screen[data-section="Section1"] .question-text,
+#quiz-screen[data-section="Section2"] .question-text {
     width: 100%;
     height: 48px;
     min-height: 48px;
@@ -140,19 +132,13 @@ button {
 }
 
 
-/* S1・S2のクメール語は非表示 */
-
-#quiz-screen[data-course="A1ことば"] .khmer-question-text,
-#quiz-screen[data-course="A1かんじ"] .khmer-question-text,
-#quiz-screen[data-course="A1かいわ"] .khmer-question-text {
+#quiz-screen[data-section="Section1"] .khmer-question-text,
+#quiz-screen[data-section="Section2"] .khmer-question-text {
     display: none !important;
 }
 
-/* 問題画像 */
-
-#quiz-screen[data-course="A1ことば"] .question-image,
-#quiz-screen[data-course="A1かんじ"] .question-image,
-#quiz-screen[data-course="A1かいわ"] .question-image {
+#quiz-screen[data-section="Section1"] .question-image,
+#quiz-screen[data-section="Section2"] .question-image {
     display: block;
 
     width: auto;
@@ -166,12 +152,8 @@ button {
     object-fit: contain;
 }
 
-
-/* 音声 */
-
-#quiz-screen[data-course="A1ことば"] .audio-player,
-#quiz-screen[data-course="A1かんじ"] .audio-player,
-#quiz-screen[data-course="A1かいわ"] .audio-player {
+#quiz-screen[data-section="Section1"] .audio-player,
+#quiz-screen[data-section="Section2"] .audio-player {
     display: block;
 
     max-width: 100%;
@@ -179,45 +161,71 @@ button {
     margin: 5px 0 15px 65px;
 }
 
-
 /* =========================
    S4
    ========================= */
 
-#quiz-screen[data-course="A1どっかい"] .question-content {
+#quiz-screen[data-section="Section4"] .question-content {
     width: 100%;
     height: auto;
     min-height: 0;
     overflow: visible;
 }
 
-#quiz-screen[data-course="A1どっかい"] .question-text {
+#quiz-screen[data-section="Section4"] .question-text {
     width: 100%;
-
     padding: 5px 15px;
     margin-bottom: 5px;
-
     color: #111;
     font-size: 21px;
     line-height: 1.8;
-
     white-space: normal;
 }
 
-#quiz-screen[data-course="A1どっかい"] .question-image {
+#quiz-screen[data-section="Section4"] .question-image {
     display: block;
-
     width: auto;
     height: auto;
-
     max-width: 100%;
     max-height: none;
-
     margin: 5px auto 15px auto;
-
     object-fit: contain;
 }
 
+
+/* =========================
+   S4 選択肢
+   ========================= */
+
+#quiz-screen[data-section="Section4"] .choice-button {
+    height: auto;
+    min-height: 45px;
+}
+
+#quiz-screen[data-section="Section4"] .choice-button:has(.choice-image) {
+    min-height: 160px;
+    justify-content: center;
+    text-align: center;
+}
+
+#quiz-screen[data-section="Section4"] .choice-content:has(.choice-image) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 8px;
+}
+
+#quiz-screen[data-section="Section4"] .choice-image {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 140px;
+    margin: 0 auto;
+    object-fit: contain;
+}
 
 /* =========================
    小問
@@ -308,34 +316,67 @@ button {
     object-fit: contain;
 }
 
-
 /* =========================
    S4 選択肢
    ========================= */
 
-/*
- * 文字だけの選択肢
- * → 元の45pxの高さを維持
- */
-
-#quiz-screen[data-course="A1どっかい"] .choice-button {
+#quiz-screen[data-section="Section4"] .choice-button {
     height: auto;
     min-height: 45px;
 }
 
-
-/*
- * 画像がある選択肢だけ
- * → 画像と文字を上下に配置
- */
-
-#quiz-screen[data-course="A1どっかい"] .choice-button:has(.choice-image) {
+/* 画像がある選択肢 */
+#quiz-screen[data-section="Section4"] .choice-button.choice-with-image {
     min-height: 160px;
     justify-content: center;
     text-align: center;
 }
 
-#quiz-screen[data-course="A1どっかい"] .choice-content:has(.choice-image) {
+/* 画像がある選択肢の中身 */
+#quiz-screen[data-section="Section4"] .choice-button.choice-with-image .choice-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 8px;
+}
+
+/* S4の選択肢画像 */
+#quiz-screen[data-section="Section4"] .choice-button.choice-with-image .choice-image {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 140px;
+    margin: 0 auto;
+    object-fit: contain;
+}
+
+/* =========================
+   S4 選択肢
+   ========================= */
+
+/* 文字だけの選択肢 */
+#quiz-screen[data-course="Section4"] .choice-button {
+    height: auto;
+    min-height: 45px;
+}
+
+/* 画像がある選択肢 */
+#quiz-screen[data-course="Section4"] .choice-button:has(.choice-image) {
+    height: 160px;
+    min-height: 160px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+}
+
+/* 画像がある選択肢の中身 */
+#quiz-screen[data-course="Section4"] .choice-content:has(.choice-image) {
     display: flex;
     flex-direction: column;
 
@@ -343,10 +384,13 @@ button {
     justify-content: center;
 
     width: 100%;
+    height: 100%;
+
     gap: 8px;
 }
 
-#quiz-screen[data-course="A1どっかい"] .choice-image {
+/* S4の選択肢画像 */
+#quiz-screen[data-course="Section4"] .choice-image {
     display: block;
 
     width: auto;
@@ -359,7 +403,6 @@ button {
 
     object-fit: contain;
 }
-
 
 /* =========================
    ルビ
@@ -380,21 +423,21 @@ rt {
    ========================= */
 
 /*
- * S4は画像と文字を横並びにせず、
- * 上下に配置して重ならないようにする
+ * 文字だけの選択肢
  */
 
-#quiz-screen.course-A1どっかい .choice-button {
+#quiz-screen[data-course="Section4"] .choice-button {
     height: auto;
+    min-height: 45px;
+}
+
+#quiz-screen[data-course="Section4"] .choice-button:has(.choice-image) {
     min-height: 160px;
-
-    align-items: center;
     justify-content: center;
-
     text-align: center;
 }
 
-#quiz-screen.course-A1どっかい .choice-content {
+#quiz-screen[data-course="Section4"] .choice-content:has(.choice-image) {
     display: flex;
     flex-direction: column;
 
@@ -405,7 +448,7 @@ rt {
     gap: 8px;
 }
 
-#quiz-screen.course-A1どっかい .choice-image {
+#quiz-screen[data-course="Section4"] .choice-image {
     display: block;
 
     width: auto;
@@ -418,7 +461,6 @@ rt {
 
     object-fit: contain;
 }
-
 
 /* =========================
    ルビ
@@ -495,10 +537,21 @@ rt {
         padding: 10px;
     }
 
-    .choice-image {
-        max-width: 100px;
-        max-height: 100px;
+@media (max-width: 600px) {
+
+    body {
+        padding: 10px;
     }
+
+    .choice-button {
+        padding: 8px;
+    }
+
+    .question-text,
+    .subquestion-text {
+        font-size: 18px;
+    }
+}
 
     .choice-button {
         padding: 8px;
@@ -520,4 +573,75 @@ rt {
     object-fit: contain;
     display: block;
     margin: 0 auto 10px auto;
+}
+
+/* =========================
+   問題番号ジャンプバー
+   ========================= */
+
+body {
+    padding-bottom: 70px;
+}
+
+#question-jump-bar {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    gap: 4px;
+
+    padding: 6px 8px;
+
+    background: #ffffff;
+    border-top: 1px solid #ccc;
+
+    z-index: 1000;
+}
+
+.question-jump-button {
+    width: 32px;
+    height: 30px;
+
+    margin: 0;
+    padding: 0;
+
+    font-size: 14px;
+
+    border: 1px solid #777;
+    border-radius: 4px;
+
+    background: #ffffff;
+    color: #111;
+
+    cursor: pointer;
+}
+
+.question-jump-button.current {
+    background: #dddddd;
+    font-weight: bold;
+}
+
+#confirm-button,
+#restart-button {
+    width: 120px;
+    height: 45px;
+    padding: 10px 20px;
+    margin: 5px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+
+    border: 1px solid #999;
+    border-radius: 6px;
+    background: #f5f5f5;
+    color: #222;
+    cursor: pointer;
 }
