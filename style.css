@@ -99,11 +99,13 @@ button {
 }
 
 #question-number {
+    position: absolute;
+    left: calc(50% - 170px);
+
     font-size: 32px;
     font-weight: bold;
-    margin-bottom: 20px;
+    margin: 0;
 }
-
 
 #quiz-screen[data-section="Section1"] .question-content,
 #quiz-screen[data-section="Section2"] .question-content {
@@ -566,13 +568,35 @@ rt {
 /* =========================
    ロゴ
    ========================= */
+/* =========================
+   ロゴ・問題番号
+   ========================= */
+
+.quiz-header {
+    width: 100%;
+    height: 76px;
+
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 .site-logo {
     width: 20mm;
     height: 20mm;
     object-fit: contain;
     display: block;
-    margin: 0 auto 10px auto;
+    margin: 0;
+}
+
+.quiz-header #question-number {
+    position: static;
+
+    font-size: 32px;
+    font-weight: bold;
+    margin: 0;
 }
 
 /* =========================
