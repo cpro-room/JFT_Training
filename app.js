@@ -5,10 +5,18 @@ let allQuestions = [];
 // =========================
 
 const displayedCourses = [
-    "A1ことば",
-    "A1かんじ",
-    "A1かいわ",
-    "A1どっかい"
+    "A1ことば①",
+    "A1ことば②",
+    "A1ことば③",
+    "A1かんじ①",
+    "A1かんじ②",
+    "A1かんじ③",
+    "A1かいわ①",
+    "A1かいわ②",
+    "A1かいわ③",
+    "A1かいわ④",
+    "A1どっかい①",
+    "A1どっかい②"
 ];
 
 let currentQuestions = [];
@@ -312,11 +320,16 @@ if (
             firstSubQuestionIndex > 0
         ) {
 
-            const intro =
-                question.question.substring(
-                    0,
-                    firstSubQuestionIndex
-                ).trim();
+    let intro =
+        question.question.substring(
+            0,
+            firstSubQuestionIndex
+        ).trim();
+
+    intro = intro.replace(
+        /[^<>\s]+\.(png|jpg|jpeg|gif|webp)/gi,
+        ""
+    ).trim();
 
             if (intro) {
 
