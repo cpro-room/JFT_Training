@@ -1015,11 +1015,10 @@ function createQuestionJumpButtons() {
     );
 
     updateQuestionJumpButtons();
+    updateQuestionJumpBarHeight();
 }
 
-
 function updateQuestionJumpButtons() {
-
     const buttons =
         document.querySelectorAll(
             ".question-jump-button"
@@ -1027,14 +1026,29 @@ function updateQuestionJumpButtons() {
 
     buttons.forEach(
         (button, index) => {
-
             button.classList.toggle(
                 "current",
                 index === currentQuestionIndex
             );
 
+            button.classList.toggle(
+                "answered",
+                Array.isArray(userAnswers[index]) &&
+                userAnswers[index].some(answer => answer)
+            );
         }
     );
+}
+
+function updateQuestionJumpBarHeight() {
+    const bar = document.getElementById("question-jump-bar");
+
+    if (!bar) {
+        return;
+    }
+
+    document.body.style.paddingBottom =
+        `${bar.offsetHeight + 20}px`;
 }
 
 // =========================

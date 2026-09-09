@@ -627,6 +627,10 @@ body {
     font-weight: bold;
 }
 
+.question-jump-button.answered {
+    background: #f8d7da;
+}
+
 #confirm-button,
 #restart-button {
     width: 120px;
