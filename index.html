@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>JFT Training</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <img src="logo.png" class="site-logo" alt="JFT Training">
+
+    <!-- =========================
+         スタート画面
+         ========================= -->
+
+<div id="start-screen">
+    <div class="app-title">JFT れんしゅう</div>
+    <div id="course-buttons"></div>
+</div>
+
+    <!-- =========================
+         問題画面
+         ========================= -->
+
+    <div id="quiz-screen" class="hidden">
+
+        <div id="question-number"></div>
+
+        <div id="question-area"></div>
+
+<div id="navigation">
+    <button id="back-button">Back</button>
+    <button id="next-button">Next</button>
+</div>
+
+    </div>
+
+
+    <!-- =========================
+         結果画面
+         ========================= -->
+
+    <div id="result-screen" class="hidden">
+
+        <h1>結果</h1>
+
+        <div id="score"></div>
+
+        <div id="correct-count"></div>
+
+        <div id="result-list"></div>
+
+        <button id="restart-button">
+            コース選択に戻る
+        </button>
+
+    </div>
+
+
+    <script src="app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,521 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+
+    font-family:
+        Arial,
+        "Noto Sans JP",
+        sans-serif;
+
+    background: #ffffff;
+    color: #222;
+}
+
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================
+   共通
+   ========================= */
+
+button {
+    font-size: 18px;
+    padding: 10px 20px;
+    margin: 5px;
+}
+
+#back-button,
+#next-button {
+    background: #4caf50;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+#next-button.finish-button {
+    background: #d32f2f;
+    color: #ffffff;
+}
+
+/* =========================
+   スタート画面
+   ========================= */
+
+#start-screen {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.app-logo {
+    text-align: center;
+}
+
+.app-logo img {
+    width: 20mm;
+    height: 20mm;
+    object-fit: contain;
+}
+
+.app-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    margin: 12px 0 20px;
+}
+
+#course-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.course-button {
+    min-width: 120px;
+    background: #f8d7da;
+    border: 1px solid #e8b8bd;
+    border-radius: 12px;
+    padding: 14px 10px;
+    font-size: 21px;
+    cursor: pointer;
+}
+
+/* =========================
+   問題画面
+   ========================= */
+
+#quiz-screen {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+#question-number {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+
+/* =========================
+   S1・S2・S3
+   ========================= */
+
+#quiz-screen[data-course="A1ことば"] .question-content,
+#quiz-screen[data-course="A1かんじ"] .question-content,
+#quiz-screen[data-course="A1かいわ"] .question-content {
+    width: 100%;
+    height: 196px;
+    min-height: 196px;
+    overflow: hidden;
+}
+
+/* 問題文 */
+
+#quiz-screen[data-course="A1ことば"] .question-text,
+#quiz-screen[data-course="A1かんじ"] .question-text,
+#quiz-screen[data-course="A1かいわ"] .question-text {
+    width: 100%;
+    height: 48px;
+    min-height: 48px;
+
+    padding: 5px 15px;
+    margin-bottom: 5px;
+
+    color: #111;
+    font-size: 21px;
+    line-height: 1.8;
+
+    white-space: normal;
+    overflow: visible;
+    flex-shrink: 0;
+}
+
+
+/* S1・S2のクメール語は非表示 */
+
+#quiz-screen[data-course="A1ことば"] .khmer-question-text,
+#quiz-screen[data-course="A1かんじ"] .khmer-question-text,
+#quiz-screen[data-course="A1かいわ"] .khmer-question-text {
+    display: none !important;
+}
+
+/* 問題画像 */
+
+#quiz-screen[data-course="A1ことば"] .question-image,
+#quiz-screen[data-course="A1かんじ"] .question-image,
+#quiz-screen[data-course="A1かいわ"] .question-image {
+    display: block;
+
+    width: auto;
+    height: auto;
+
+    max-width: 420px;
+    max-height: 180px;
+
+    margin: 5px 0 15px 65px;
+
+    object-fit: contain;
+}
+
+
+/* 音声 */
+
+#quiz-screen[data-course="A1ことば"] .audio-player,
+#quiz-screen[data-course="A1かんじ"] .audio-player,
+#quiz-screen[data-course="A1かいわ"] .audio-player {
+    display: block;
+
+    max-width: 100%;
+
+    margin: 5px 0 15px 65px;
+}
+
+
+/* =========================
+   S4
+   ========================= */
+
+#quiz-screen[data-course="A1どっかい"] .question-content {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+}
+
+#quiz-screen[data-course="A1どっかい"] .question-text {
+    width: 100%;
+
+    padding: 5px 15px;
+    margin-bottom: 5px;
+
+    color: #111;
+    font-size: 21px;
+    line-height: 1.8;
+
+    white-space: normal;
+}
+
+#quiz-screen[data-course="A1どっかい"] .question-image {
+    display: block;
+
+    width: auto;
+    height: auto;
+
+    max-width: 100%;
+    max-height: none;
+
+    margin: 5px auto 15px auto;
+
+    object-fit: contain;
+}
+
+
+/* =========================
+   小問
+   ========================= */
+
+.subquestion {
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+.subquestion-text {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+
+/* =========================
+   選択肢
+   ========================= */
+
+.choice-list {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    max-width: 700px;
+
+    margin: 0 auto;
+
+    gap: 16px;
+}
+
+.choice-button {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    height: 45px;
+    min-height: 45px;
+
+    padding: 8px;
+
+    border: 1px solid #000;
+    border-radius: 4px;
+
+    background: #fff;
+    color: #111;
+
+    text-align: left;
+    font-size: 21px;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.1s,
+        border-color 0.1s;
+}
+
+.choice-button:hover {
+    padding: 7px;
+    border: 2px solid #f79d52;
+    background: #fdeada;
+}
+
+.choice-button.selected {
+    padding: 7px;
+    border: 2px solid #f79d52;
+    background: #fdeada;
+}
+
+.choice-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.choice-image {
+    display: block;
+
+    width: auto;
+    height: auto;
+
+    max-width: 120px;
+    max-height: 120px;
+
+    margin: 0 auto;
+
+    object-fit: contain;
+}
+
+
+/* =========================
+   S4 選択肢
+   ========================= */
+
+/*
+ * 文字だけの選択肢
+ * → 元の45pxの高さを維持
+ */
+
+#quiz-screen[data-course="A1どっかい"] .choice-button {
+    height: auto;
+    min-height: 45px;
+}
+
+
+/*
+ * 画像がある選択肢だけ
+ * → 画像と文字を上下に配置
+ */
+
+#quiz-screen[data-course="A1どっかい"] .choice-button:has(.choice-image) {
+    min-height: 160px;
+    justify-content: center;
+    text-align: center;
+}
+
+#quiz-screen[data-course="A1どっかい"] .choice-content:has(.choice-image) {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    gap: 8px;
+}
+
+#quiz-screen[data-course="A1どっかい"] .choice-image {
+    display: block;
+
+    width: auto;
+    height: auto;
+
+    max-width: 100%;
+    max-height: 140px;
+
+    margin: 0 auto;
+
+    object-fit: contain;
+}
+
+
+/* =========================
+   ルビ
+   ========================= */
+
+ruby {
+    ruby-position: over;
+}
+
+rt {
+    font-size: 0.5em;
+    line-height: 1;
+    font-weight: normal;
+}
+
+/* =========================
+   S4 選択肢
+   ========================= */
+
+/*
+ * S4は画像と文字を横並びにせず、
+ * 上下に配置して重ならないようにする
+ */
+
+#quiz-screen.course-A1どっかい .choice-button {
+    height: auto;
+    min-height: 160px;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+}
+
+#quiz-screen.course-A1どっかい .choice-content {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    gap: 8px;
+}
+
+#quiz-screen.course-A1どっかい .choice-image {
+    display: block;
+
+    width: auto;
+    height: auto;
+
+    max-width: 100%;
+    max-height: 140px;
+
+    margin: 0 auto;
+
+    object-fit: contain;
+}
+
+
+/* =========================
+   ルビ
+   ========================= */
+
+ruby {
+    ruby-position: over;
+}
+
+rt {
+    font-size: 0.5em;
+    line-height: 1;
+    font-weight: normal;
+}
+
+/* =========================
+   ナビゲーション
+   ========================= */
+
+#navigation {
+    margin-top: 30px;
+    text-align: right;
+}
+
+
+/* =========================
+   確認画面
+   ========================= */
+
+#confirm-screen {
+    max-width: 600px;
+    margin: 80px auto;
+    text-align: center;
+}
+
+
+/* =========================
+   結果
+   ========================= */
+
+#result-screen {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#score {
+    font-size: 40px;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+#correct-count {
+    font-size: 22px;
+    margin-bottom: 30px;
+}
+
+.result-item {
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+}
+
+.result-correct {
+    color: #006600;
+}
+
+.result-wrong {
+    color: #cc0000;
+}
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 10px;
+    }
+
+    .choice-image {
+        max-width: 100px;
+        max-height: 100px;
+    }
+
+    .choice-button {
+        padding: 8px;
+    }
+
+    .question-text,
+    .subquestion-text {
+        font-size: 18px;
+    }
+}
+
+/* =========================
+   ロゴ
+   ========================= */
+
+.site-logo {
+    width: 20mm;
+    height: 20mm;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 10px auto;
+}
