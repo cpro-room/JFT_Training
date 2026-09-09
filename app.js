@@ -205,12 +205,8 @@ function showQuestion() {
 
     questionArea.innerHTML = "";
 
-
-    document.getElementById(
-        "question-number"
-    ).textContent =
+    document.getElementById("question-number").textContent =
         `${currentQuestionIndex + 1} / ${currentQuestions.length}`;
-
 
     /*
      * 小問の有無を判定
@@ -805,34 +801,37 @@ function showChoices(
 
             if (!confirmationMode) {
 
-                button.addEventListener(
-                    "click",
-                    () => {
+   button.addEventListener(
+    "click",
+    () => {
 
-                        const buttons =
-                            list.querySelectorAll(
-                                ".choice-button"
-                            );
+        if (confirmationMode) {
+            return;
+        }
 
-                        buttons.forEach(
-                            b =>
-                                b.classList.remove(
-                                    "selected"
-                                )
-                        );
+        const buttons =
+            list.querySelectorAll(
+                ".choice-button"
+            );
 
-                        button.classList.add(
-                            "selected"
-                        );
+        buttons.forEach(
+            b =>
+                b.classList.remove(
+                    "selected"
+                )
+        );
 
-                        saveAnswer(
-                            questionIndex,
-                            subIndex,
-                            choice
-                        );
-                    }
-                );
+        button.classList.add(
+            "selected"
+        );
 
+        saveAnswer(
+            questionIndex,
+            subIndex,
+            choice
+        );
+    }
+);
             } else {
 
                 button.disabled = true;
@@ -982,6 +981,24 @@ function createQuestionJumpButtons() {
 
     bar.innerHTML = "";
 
+    /* 問題番号を画面左端に固定 */
+bar.style.position = "absolute";
+bar.style.left = "0";
+bar.style.top = "86px";
+bar.style.width = "46px";
+bar.style.height = "auto";
+
+bar.style.display = "block";
+bar.style.padding = "4px";
+bar.style.margin = "0";
+
+bar.style.overflow = "visible";
+    bar.style.background = "#ffffff";
+    bar.style.borderRight = "1px solid #ccc";
+    bar.style.borderTop = "none";
+
+    bar.style.zIndex = "1000";
+
     currentQuestions.forEach(
         (question, index) => {
 
@@ -993,6 +1010,14 @@ function createQuestionJumpButtons() {
 
             button.textContent =
                 index + 1;
+
+            /* 各番号を強制的に縦一列 */
+            button.style.display = "block";
+            button.style.width = "38px";
+            button.style.minWidth = "38px";
+            button.style.height = "34px";
+            button.style.margin = "0 0 4px 0";
+            button.style.padding = "0";
 
             button.addEventListener(
                 "click",
@@ -1010,12 +1035,10 @@ function createQuestionJumpButtons() {
             );
 
             bar.appendChild(button);
-
         }
     );
 
     updateQuestionJumpButtons();
-    updateQuestionJumpBarHeight();
 }
 
 function updateQuestionJumpButtons() {
