@@ -402,6 +402,36 @@ function showQuestion() {
     updateQuestionJumpButtons();
 }
 
+// 通常問題の選択肢表示
+function showNormalChoices(question, container) {
+    const questionIndex = currentQuestionIndex;
+
+    let choices = displayedChoiceSets[questionIndex];
+
+    if (!choices) {
+        choices = (question.choices || []).map(
+            (choice, index) => ({
+                text: String(choice.text || ""),
+                image: String(choice.image || ""),
+                audio: String(choice.audio || ""),
+                correct: choice.correct === true,
+                _choiceIndex: index
+            })
+        );
+
+        choices = prepareChoices(choices);
+
+        displayedChoiceSets[questionIndex] = choices;
+    }
+
+    showChoices(
+        choices,
+        container,
+        questionIndex,
+        0
+    );
+}
+
 // =========================
 // 小問判定
 // =========================
@@ -1359,7 +1389,6 @@ function splitMediaValues(value) {
 // =========================
 
 function formatText(text) {
-
     if (!text) {
         return "";
     }
@@ -1369,7 +1398,8 @@ function formatText(text) {
         .replace(/&lt;/g, "<")
         .replace(/&gt;/g, ">")
         .replace(/&quot;/g, '"')
-        .replace(/&#39;/g, "'");
+        .replace(/&#39;/g, "'")
+        .replace(/〈([^〉]+)〉/g, "<u>$1</u>");
 }
 
 // =========================
