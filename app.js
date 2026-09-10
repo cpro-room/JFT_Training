@@ -748,6 +748,9 @@ function showChoices(
                         "span"
                     );
 
+                text.className =
+                    "choice-text";
+
                 text.innerHTML =
                     formatText(
                         choice.text
@@ -848,7 +851,112 @@ function showChoices(
     container.appendChild(
         list
     );
+
+    requestAnimationFrame(() => {
+        fitChoiceText(list);
+    });
 }
+
+// =========================
+// 選択肢文字の自動縮小
+// =========================
+
+function fitChoiceText(container) {
+
+    const buttons =
+        container.querySelectorAll(
+            ".choice-button:not(.choice-with-image)"
+        );
+
+    buttons.forEach(button => {
+
+        const content =
+            button.querySelector(".choice-content");
+
+        const text =
+            button.querySelector(".choice-text");
+
+        if (!content || !text) {
+            return;
+        }
+
+        const maxFontSize = 21;
+        const minFontSize = 8;
+
+        // 文字の実際の幅を測るためのコピー
+        const measure =
+            document.createElement("span");
+
+        measure.innerHTML =
+            text.innerHTML;
+
+        const style =
+            window.getComputedStyle(text);
+
+        measure.style.position = "absolute";
+        measure.style.visibility = "hidden";
+        measure.style.whiteSpace = "nowrap";
+        measure.style.width = "max-content";
+        measure.style.fontFamily =
+            style.fontFamily;
+        measure.style.fontWeight =
+            style.fontWeight;
+        measure.style.fontStyle =
+            style.fontStyle;
+        measure.style.letterSpacing =
+            style.letterSpacing;
+        measure.style.fontSize =
+            `${maxFontSize}px`;
+
+        document.body.appendChild(measure);
+
+        const textWidth =
+            measure.getBoundingClientRect().width;
+
+        const availableWidth =
+            content.getBoundingClientRect().width;
+
+        measure.remove();
+
+        if (
+            textWidth <= availableWidth
+        ) {
+
+            text.style.fontSize =
+                `${maxFontSize}px`;
+
+            return;
+        }
+
+        const ratio =
+            availableWidth / textWidth;
+
+        let fontSize =
+            maxFontSize * ratio;
+
+        fontSize =
+            Math.max(
+                minFontSize,
+                Math.floor(fontSize * 10) / 10
+            );
+
+        text.style.fontSize =
+            `${fontSize}px`;
+    });
+}
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        document
+            .querySelectorAll(".choice-list")
+            .forEach(list => {
+                fitChoiceText(list);
+            });
+    }
+);
+
 
 // =========================
 // 回答保存

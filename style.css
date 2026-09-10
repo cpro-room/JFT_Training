@@ -241,8 +241,10 @@ button {
 .subquestion-text {
     font-size: 20px;
     margin-bottom: 10px;
-}
 
+    padding-left: 1.5em;
+    text-indent: -1.5em;
+}
 
 /* =========================
    選択肢
@@ -302,6 +304,19 @@ button {
     display: flex;
     align-items: center;
     gap: 10px;
+
+    width: 100%;
+    min-width: 0;
+}
+
+.choice-text {
+    display: block;
+
+    min-width: 0;
+
+    white-space: nowrap;
+
+    flex: 1 1 auto;
 }
 
 .choice-image {
