@@ -838,6 +838,7 @@ function showChoices(
             } else {
 
                 button.disabled = true;
+                button.style.pointerEvents = "none";
 
             }
 
@@ -1157,15 +1158,47 @@ function updateQuestionJumpButtons() {
 
     buttons.forEach(
         (button, index) => {
+
             button.classList.toggle(
                 "current",
                 index === currentQuestionIndex
             );
 
+            const question =
+                currentQuestions[index];
+
+            const subQuestions =
+                parseSubQuestions(
+                    question.question
+                );
+
+            let answered = false;
+
+            if (subQuestions.length > 0) {
+
+                const answers =
+                    userAnswers[index];
+
+                answered =
+                    Array.isArray(answers) &&
+                    answers.length === subQuestions.length &&
+                    subQuestions.every(
+                        (_, subIndex) =>
+                            answers[subIndex]
+                    );
+
+            } else {
+
+                answered =
+                    Array.isArray(userAnswers[index]) &&
+                    userAnswers[index].some(
+                        answer => answer
+                    );
+            }
+
             button.classList.toggle(
                 "answered",
-                Array.isArray(userAnswers[index]) &&
-                userAnswers[index].some(answer => answer)
+                answered
             );
         }
     );

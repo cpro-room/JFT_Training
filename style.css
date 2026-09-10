@@ -622,19 +622,22 @@ body {
     border: 1px solid #777;
     border-radius: 4px;
 
-    background: #ffffff;
-    color: #111;
+    background: #4caf50;
+    color: #ffffff;
 
     cursor: pointer;
 }
 
-.question-jump-button.current {
-    background: #dddddd;
-    font-weight: bold;
+.question-jump-button.answered {
+    background: #555555;
+    color: #ffffff;
 }
 
-.question-jump-button.answered {
-    background: #f8d7da;
+.question-jump-button.current {
+    background: #4caf50;
+    border: 3px solid #f79d52;
+    color: #ffffff;
+    font-weight: bold;
 }
 
 #confirm-button,
