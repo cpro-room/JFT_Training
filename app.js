@@ -11,6 +11,12 @@ const displayedCourses = [
     "A1かいわ②",
     "A1かいわ③",
     "A1かいわ④",
+    "A1ちょうかい①",
+    "A1ちょうかい②",
+    "A1ちょうかい③",
+    "A1ちょうかい④",
+    "A1ちょうかい⑤",
+    "A1ちょうかい⑥",
     "A1どっかい①",
     "A1どっかい②"
 ];
@@ -58,12 +64,52 @@ function createCourseButtons() {
     courses.forEach(course => {
         const button = document.createElement("button");
 
-        button.className = "course-button";
-        button.textContent = course;
+button.className = "course-button";
 
-        button.addEventListener("click", () => {
-            startQuiz(course);
-        });
+if (
+    course === "A1ことば①" ||
+    course === "A1ことば②" ||
+    course === "A1ことば③"
+) {
+    button.classList.add("course-kotoba");
+
+} else if (
+    course === "A1かんじ①" ||
+    course === "A1かんじ②" ||
+    course === "A1かんじ③"
+) {
+    button.classList.add("course-kanji");
+
+} else if (
+    course === "A1かいわ①" ||
+    course === "A1かいわ②" ||
+    course === "A1かいわ③" ||
+    course === "A1かいわ④"
+) {
+    button.classList.add("course-kaiwa");
+
+} else if (
+    course === "A1ちょうかい①" ||
+    course === "A1ちょうかい②" ||
+    course === "A1ちょうかい③" ||
+    course === "A1ちょうかい④" ||
+    course === "A1ちょうかい⑤" ||
+    course === "A1ちょうかい⑥"
+) {
+    button.classList.add("course-choukai");
+
+} else if (
+    course === "A1どっかい①" ||
+    course === "A1どっかい②"
+) {
+    button.classList.add("course-dokkai");
+}
+
+button.textContent = course;
+
+button.addEventListener("click", () => {
+    startQuiz(course);
+});
 
         container.appendChild(button);
     });
@@ -140,7 +186,9 @@ function showQuestion() {
         `${currentQuestionIndex + 1} / ${currentQuestions.length}`;
 
     const subQuestions =
-        parseSubQuestions(question.question);
+        question.section === "Section3"
+            ? parseSubQuestions(question.khmerQuestion)
+            : parseSubQuestions(question.question);
 
     if (subQuestions.length === 0) {
         const questionContent =
@@ -150,24 +198,85 @@ function showQuestion() {
             "question-content";
 
         if (
-            question.question &&
-            question.question.trim()
+            question.section === "Section3" &&
+            question.khmerQuestion &&
+            question.khmerQuestion.trim()
         ) {
-            const questionText =
+            const khmerText =
                 document.createElement("div");
 
-            questionText.className =
-                "question-text";
+            khmerText.className =
+                "question-text khmer-question-text";
 
-            questionText.innerHTML =
-                formatText(question.question);
+            khmerText.innerHTML =
+                formatText(question.khmerQuestion);
 
             questionContent.appendChild(
-                questionText
+                khmerText
             );
         }
 
+    if (
+    question.section === "Section3"
+) {
+    const questionLines =
+        String(question.question || "")
+            .split(/\r?\n|<br\s*\/?>/i)
+            .map(line => line.trim())
+            .filter(Boolean);
+
+    if (questionLines.length > 0) {
+        addMedia(
+            questionLines[0],
+            questionContent,
+            "question"
+        );
+    }
+
+    if (questionLines.length > 1) {
+        const questionText =
+            document.createElement("div");
+
+        questionText.className =
+            "question-text";
+
+        questionText.style.marginTop =
+            "1em";
+
+        questionText.innerHTML =
+            formatText(
+                questionLines.slice(1).join("\n")
+            );
+
+        questionContent.appendChild(
+            questionText
+        );
+
+        questionContent.style.marginBottom =
+            "0.5em";
+
+    }
+
+} else if (
+    question.question &&
+    question.question.trim()
+) {
+    const questionText =
+        document.createElement("div");
+
+    questionText.className =
+        "question-text";
+
+    questionText.innerHTML =
+        formatText(question.question);
+
+    questionContent.appendChild(
+        questionText
+    );
+}
+
         if (
+            question.section !== "Section3" &&
             question.section !== "Section1" &&
             question.section !== "Section2" &&
             question.khmerQuestion &&
@@ -246,27 +355,46 @@ function showQuestion() {
             khmerText.className =
                 "question-text";
 
+            const khmerIntro =
+                question.section === "Section3"
+                    ? question.khmerQuestion.split(/\(\d+\)/)[0].trim()
+                    : question.khmerQuestion;
+
             khmerText.innerHTML =
-                formatText(question.khmerQuestion);
+                formatText(khmerIntro);
 
             questionArea.appendChild(
                 khmerText
             );
         }
 
-        const questionImageMatch =
-            question.question.match(
-                /([^<>\s]+\.(png|jpg|jpeg|gif|webp))/i
-            );
-
-        if (
-            questionImageMatch
-        ) {
+        if (question.section === "Section3") {
             addMedia(
-                questionImageMatch[1],
+                question.questionImage,
                 questionArea,
                 "question"
             );
+
+            addMedia(
+                question.audio,
+                questionArea,
+                "question"
+            );
+        } else {
+            const questionImageMatch =
+                question.question.match(
+                    /([^<>\s]+\.(png|jpg|jpeg|gif|webp))/i
+                );
+
+            if (
+                questionImageMatch
+            ) {
+                addMedia(
+                    questionImageMatch[1],
+                    questionArea,
+                    "question"
+                );
+            }
         }
 
         showSubQuestions(
@@ -661,7 +789,7 @@ function fitChoiceText(container) {
             return;
         }
 
-        const maxFontSize = 21;
+        const maxFontSize = 18;
         const minFontSize = 8;
 
         const measure =
@@ -828,16 +956,24 @@ document
                 showQuestion();
 
             } else {
-                if (confirmationMode) {
-                    document
-                        .getElementById("quiz-screen")
-                        .classList.add("hidden");
+         if (confirmationMode) {
+    document
+        .querySelectorAll("audio")
+        .forEach(audio => audio.pause());
+
+    document
+        .getElementById("quiz-screen")
+        .classList.add("hidden");
 
                     document
                         .getElementById("result-screen")
                         .classList.remove("hidden");
 
-                } else {
+                          } else {
+                    document
+                        .querySelectorAll("audio")
+                        .forEach(audio => audio.pause());
+
                     calculateResult();
                 }
             }
@@ -961,10 +1097,12 @@ function updateQuestionJumpButtons() {
             const question =
                 currentQuestions[index];
 
-            const subQuestions =
-                parseSubQuestions(
-                    question.question
-                );
+ const subQuestions =
+    parseSubQuestions(
+        question.section === "Section3"
+            ? question.khmerQuestion
+            : question.question
+    );
 
             let answered = false;
 
@@ -1025,9 +1163,11 @@ function calculateResult() {
             const answers =
                 userAnswers[index];
 
-            const subQuestions =
+               const subQuestions =
                 parseSubQuestions(
-                    question.question
+                    question.section === "Section3"
+                        ? question.khmerQuestion
+                        : question.question
                 );
 
             let correct = false;
@@ -1085,30 +1225,76 @@ function calculateResult() {
                 correct,
 
                 subResults:
-                    question.section === "Section4"
+                    question.section === "Section4" ||
+                    question.section === "Section3"
                         ? subResults
                         : []
             });
         }
     );
 
-    const total =
-        currentQuestions.length;
+let totalAnswers = 0;
+let correctAnswers = 0;
 
-    const percentage =
-        total === 0
-            ? 0
-            : Math.round(
-                correctCount /
-                total *
-                100
+currentQuestions.forEach(
+    (question, index) => {
+        const answers =
+            userAnswers[index];
+
+        const subQuestions =
+            parseSubQuestions(
+                question.section === "Section3"
+                    ? question.khmerQuestion
+                    : question.question
             );
 
-    showResultScreen(
-        correctCount,
-        total,
-        percentage
-    );
+        if (subQuestions.length > 0) {
+            totalAnswers +=
+                subQuestions.length;
+
+            if (Array.isArray(answers)) {
+                correctAnswers +=
+                    answers.filter(
+                        answer =>
+                            answer &&
+                            answer.correct === true
+                    ).length;
+            }
+        } else {
+            totalAnswers++;
+
+            if (
+                Array.isArray(answers) &&
+                answers.length > 0 &&
+                answers.every(
+                    answer =>
+                        answer &&
+                        answer.correct === true
+                )
+            ) {
+                correctAnswers++;
+            }
+        }
+    }
+);
+
+const total =
+    currentQuestions.length;
+
+const percentage =
+    totalAnswers === 0
+        ? 0
+        : Math.round(
+            correctAnswers /
+            totalAnswers *
+            100
+        );
+
+showResultScreen(
+    correctAnswers,
+    totalAnswers,
+    percentage
+);
 }
 
 function showResultScreen(
@@ -1132,88 +1318,145 @@ function showResultScreen(
     document
         .getElementById("correct-count")
         .textContent =
-        `正解：${correctCount} / ${total}`;
+        `${correctCount} / ${total}`;
 
-    const list =
-        document.getElementById(
-            "result-list"
-        );
+   const list =
+    document.getElementById(
+        "result-list"
+    );
 
-    list.innerHTML = "";
+list.style.width =
+    "fit-content";
+
+list.style.margin =
+    "0 auto";
+
+list.innerHTML = "";
 
     questionResults.forEach(
         result => {
-            const item =
-                document.createElement(
-                    "div"
-                );
-
-            item.className =
-                "result-item";
-
-            if (
+            const hasSubResults =
                 result.subResults &&
-                result.subResults.length > 0
-            ) {
-                item.textContent =
-                    `第${result.questionNumber}問`;
-            } else if (result.correct) {
-                item.classList.add(
-                    "result-correct"
-                );
+                result.subResults.length > 0;
 
-                item.textContent =
-                    `第${result.questionNumber}問　○ 正解`;
+            const createCell = (
+                text,
+                width,
+                color
+            ) => {
+                const cell =
+                    document.createElement(
+                        "span"
+                    );
 
-            } else {
-                item.classList.add(
-                    "result-wrong"
-                );
+                cell.textContent =
+                    text;
 
-                item.textContent =
-                    `第${result.questionNumber}問　× 不正解`;
-            }
+                cell.style.display =
+                    "inline-block";
 
-            if (
-                result.subResults &&
-                result.subResults.length > 0
-            ) {
+                cell.style.width =
+                    width;
+
+                cell.style.color =
+                    color;
+
+                return cell;
+            };
+
+            if (hasSubResults) {
                 result.subResults.forEach(
-                    subResult => {
-                        const subItem =
+                    (subResult, subIndex) => {
+                        const row =
                             document.createElement(
                                 "div"
                             );
 
-                        subItem.className =
-                            "result-sub-item";
+                        row.className =
+                            "result-item";
 
-                        if (subResult.correct) {
-                            subItem.classList.add(
-                                "result-correct"
-                            );
+                        row.style.textAlign =
+                            "left";
 
-                            subItem.textContent =
-                                `　(${subResult.number}) ○ 正解`;
-                        } else {
-                            subItem.classList.add(
-                                "result-wrong"
-                            );
+                        row.appendChild(
+                            createCell(
+                                subIndex === 0
+                                    ? `${result.questionNumber}．`
+                                    : "",
+                                "1.5em",
+                                "#222"
+                            )
+                        );
 
-                            subItem.textContent =
-                                `　(${subResult.number}) × 不正解`;
-                        }
+                        row.appendChild(
+                            createCell(
+                                `(${subResult.number})`,
+                                "2em",
+                                "#222"
+                            )
+                        );
 
-                        item.appendChild(
-                            subItem
+                        row.appendChild(
+                            createCell(
+                                subResult.correct
+                                    ? "○"
+                                    : "×",
+                                "1em",
+                                subResult.correct
+                                    ? "#006600"
+                                    : "#cc0000"
+                            )
+                        );
+
+                        list.appendChild(
+                            row
                         );
                     }
                 );
-            }
+            } else {
+                const row =
+                    document.createElement(
+                        "div"
+                    );
 
-            list.appendChild(
-                item
-            );
+                row.className =
+                    "result-item";
+
+                row.style.textAlign =
+                    "left";
+
+                row.appendChild(
+                    createCell(
+                        `${result.questionNumber}．`,
+                        "1.5em",
+                        "#222"
+                    )
+                );
+
+                row.appendChild(
+                    createCell(
+                        "",
+                        "2em",
+                        "#222"
+                    )
+                );
+
+                row.appendChild(
+                    createCell(
+                        result.correct
+                            ? "○"
+                            : "×",
+                        "1em",
+                        result.correct
+                            ? "#006600"
+                            : "#cc0000"
+                    )
+                );
+
+                list.appendChild(
+                    row
+                );
+            }
         }
     );
 
@@ -1296,7 +1539,7 @@ function addMedia(
                 lower.endsWith(".wav") ||
                 lower.endsWith(".ogg")
             ) {
-                const audio =
+                        const audio =
                     document.createElement(
                         "audio"
                     );
@@ -1304,14 +1547,16 @@ function addMedia(
                 audio.controls =
                     true;
 
+                audio.controlsList =
+                    "nodownload noplaybackrate";
+
                 audio.className =
                     "audio-player";
 
-                audio.src =
-                    path.replace(
-                        /^image\//,
-                        "audio/"
-                    );
+    audio.src =
+    path.includes("/")
+        ? path
+        : `audio/${path}`;
 
                 container.appendChild(
                     audio
@@ -1374,6 +1619,10 @@ function formatText(text) {
         .replace(/&gt;/g, ">")
         .replace(/&quot;/g, '"')
         .replace(/&#39;/g, "'")
+        .replace(
+            /([\u3400-\u9fff々]+)【([^【】]+)】/g,
+            "<ruby>$1<rt>$2</rt></ruby>"
+        )
         .replace(
             /〈([^〉]+)〉/g,
             "<u>$1</u>"

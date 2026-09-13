@@ -74,8 +74,6 @@ button {
 #course-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(6, auto);
-    grid-auto-flow: column;
     gap: 10px;
 }
 
@@ -125,7 +123,7 @@ button {
     margin-bottom: 5px;
 
     color: #111;
-    font-size: 21px;
+    font-size: 18px;
     line-height: 1.8;
 
     white-space: normal;
@@ -163,10 +161,6 @@ button {
     margin: 5px 0 15px 65px;
 }
 
-/* =========================
-   S4
-   ========================= */
-
 #quiz-screen[data-section="Section4"] .question-content {
     width: 100%;
     height: auto;
@@ -179,9 +173,13 @@ button {
     padding: 5px 15px;
     margin-bottom: 5px;
     color: #111;
-    font-size: 21px;
+    font-size: 18px;
     line-height: 1.8;
     white-space: normal;
+}
+
+#quiz-screen[data-section="Section3"] .question-text {
+    font-size: 18px;
 }
 
 #quiz-screen[data-section="Section4"] .question-image {
@@ -239,7 +237,7 @@ button {
 }
 
 .subquestion-text {
-    font-size: 20px;
+    font-size: 18px;
     margin-bottom: 10px;
 
     padding-left: 1.5em;
@@ -279,7 +277,7 @@ button {
     color: #111;
 
     text-align: left;
-    font-size: 21px;
+    font-size: 18px;
 
     cursor: pointer;
 
@@ -554,12 +552,6 @@ rt {
         padding: 10px;
     }
 
-@media (max-width: 600px) {
-
-    body {
-        padding: 10px;
-    }
-
     .choice-button {
         padding: 8px;
     }
@@ -569,17 +561,6 @@ rt {
         font-size: 18px;
     }
 }
-
-    .choice-button {
-        padding: 8px;
-    }
-
-    .question-text,
-    .subquestion-text {
-        font-size: 18px;
-    }
-}
-
 
 /* =========================
    問題番号ジャンプバー
@@ -734,4 +715,29 @@ body {
 #quiz-screen .choice-button:not(.choice-with-image) {
     height: 45px !important;
     min-height: 45px !important;
+}
+
+.course-kotoba {
+    background: #f8d7da;
+    border-color: #e8b8bd;
+}
+
+.course-kanji {
+    background: #d9edf7;
+    border-color: #b8d8e8;
+}
+
+.course-kaiwa {
+    background: #d9ead3;
+    border-color: #b7d6ae;
+}
+
+.course-choukai {
+    background: #fff2cc;
+    border-color: #e6d38a;
+}
+
+.course-dokkai {
+    background: #e4d9f5;
+    border-color: #c9b5df;
 }
