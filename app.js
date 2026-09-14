@@ -108,9 +108,12 @@ if (
 button.textContent = course;
 
 button.addEventListener("click", () => {
+    gtag('event', 'select_course', {
+        course_name: course
+    });
+
     startQuiz(course);
 });
-
         container.appendChild(button);
     });
 }
