@@ -1,33 +1,68 @@
 let allQuestions = [];
 
 const displayedCourses = [
-    "A1ことば①",
-    "A1ことば②",
-    "A1ことば③",
-    "A1かんじ①",
-    "A1かんじ②",
-    "A1かんじ③",
-    "A1かいわ①",
-    "A1かいわ②",
-    "A1かいわ③",
-    "A1かいわ④",
-    "A1ちょうかい①",
-    "A1ちょうかい②",
-    "A1ちょうかい③",
-    "A1ちょうかい④",
-    "A1ちょうかい⑤",
-    "A1ちょうかい⑥",
-    "A1どっかい①",
-    "A1どっかい②"
+    "A1",
+    "A2.1",
+    "A2.2"
+];
+
+const displayedLessons = [
+    "L1~6",
+    "L7~12",
+    "L13~18"
 ];
 
 let currentQuestions = [];
 let currentQuestionIndex = 0;
 let userAnswers = [];
 let selectedCourse = "";
+let selectedLesson = "";
+let selectedSection = "";
 let questionResults = [];
 let confirmationMode = false;
 let displayedChoiceSets = [];
+
+function getBestScores() {
+    try {
+        return JSON.parse(
+            localStorage.getItem("jft_best_scores") || "{}"
+        );
+    } catch (error) {
+        return {};
+    }
+}
+
+function getScoreKey(course, lesson1, sectionName) {
+    return `${course}__${lesson1}__${sectionName}`;
+}
+
+function saveBestScore(
+    course,
+    lesson1,
+    sectionName,
+    percentage
+) {
+    const scores = getBestScores();
+
+    const key =
+        getScoreKey(
+            course,
+            lesson1,
+            sectionName
+        );
+
+    if (
+        scores[key] === undefined ||
+        percentage > scores[key]
+    ) {
+        scores[key] = percentage;
+
+        localStorage.setItem(
+            "jft_best_scores",
+            JSON.stringify(scores)
+        );
+    }
+}
 
 async function loadQuestions() {
     try {
@@ -49,88 +84,227 @@ async function loadQuestions() {
 }
 
 function createCourseButtons() {
-    const container = document.getElementById("course-buttons");
+    const container =
+        document.getElementById("course-buttons");
 
     container.innerHTML = "";
 
-    const courses = displayedCourses.filter(
-        course =>
-            allQuestions.some(
-                question =>
-                    String(question.course || "").trim() === course
-            )
+    displayedCourses.forEach(course => {
+
+        const title =
+            document.createElement("div");
+
+        title.textContent = course;
+
+        title.style.textAlign = "center";
+        title.style.fontSize = "22px";
+        title.style.fontWeight = "bold";
+        title.style.margin = "20px 0 10px";
+
+        container.appendChild(title);
+
+        const lessonContainer =
+            document.createElement("div");
+
+        lessonContainer.style.display = "flex";
+        lessonContainer.style.justifyContent = "center";
+        lessonContainer.style.gap = "8px";
+        lessonContainer.style.flexWrap = "wrap";
+
+        displayedLessons.forEach(lesson1 => {
+
+            const exists =
+                allQuestions.some(
+                    question =>
+                        String(question.course || "").trim() === course &&
+                        String(question.lesson1 || "").trim() === lesson1
+                );
+
+            if (!exists) {
+                return;
+            }
+
+            const button =
+                document.createElement("button");
+
+            button.className =
+                "course-button";
+
+            button.textContent =
+                lesson1;
+
+button.addEventListener(
+    "click",
+    () => {
+        gtag("event", "select_lesson", {
+            course_name: course,
+            lesson1_name: lesson1
+        });
+
+        setTimeout(() => {
+            showSectionButtons(
+                course,
+                lesson1
+            );
+        }, 140);
+    }
+);
+            lessonContainer.appendChild(button);
+        });
+
+        container.appendChild(
+            lessonContainer
+        );
+    });
+}
+
+function showSectionButtons(course, lesson1) {
+    const startScreen =
+        document.getElementById("start-screen");
+
+    const sectionScreen =
+        document.getElementById("section-screen");
+
+    const container =
+        document.getElementById("section-buttons");
+
+    container.innerHTML = "";
+
+    const sections = [];
+
+    allQuestions.forEach(question => {
+
+        if (
+            String(question.course || "").trim() === course &&
+            String(question.lesson1 || "").trim() === lesson1
+        ) {
+            const sectionName =
+                String(question.sectionName || "").trim();
+
+            if (
+                sectionName &&
+                !sections.includes(sectionName)
+            ) {
+                sections.push(sectionName);
+            }
+        }
+    });
+
+    sections.forEach(sectionName => {
+
+ const button =
+    document.createElement("button");
+
+button.className =
+    "course-button";
+
+if (sectionName.startsWith("ことば")) {
+    button.classList.add("section-kotoba");
+
+} else if (sectionName.startsWith("かんじ")) {
+    button.classList.add("section-kanji");
+
+} else if (sectionName.startsWith("かいわ")) {
+    button.classList.add("section-kaiwa");
+
+} else if (sectionName.startsWith("ちょうかい")) {
+    button.classList.add("section-choukai");
+
+} else if (sectionName.startsWith("どっかい")) {
+    button.classList.add("section-dokkai");
+}
+
+const scores =
+    getBestScores();
+
+const scoreKey =
+    getScoreKey(
+        course,
+        lesson1,
+        sectionName
     );
 
-    courses.forEach(course => {
-        const button = document.createElement("button");
+const sectionText =
+    document.createElement("span");
 
-button.className = "course-button";
+sectionText.textContent =
+    sectionName;
 
-if (
-    course === "A1ことば①" ||
-    course === "A1ことば②" ||
-    course === "A1ことば③"
-) {
-    button.classList.add("course-kotoba");
+sectionText.style.paddingRight =
+    "4em";
 
-} else if (
-    course === "A1かんじ①" ||
-    course === "A1かんじ②" ||
-    course === "A1かんじ③"
-) {
-    button.classList.add("course-kanji");
+button.appendChild(
+    sectionText
+);
 
-} else if (
-    course === "A1かいわ①" ||
-    course === "A1かいわ②" ||
-    course === "A1かいわ③" ||
-    course === "A1かいわ④"
-) {
-    button.classList.add("course-kaiwa");
+const scoreText =
+    document.createElement("span");
 
-} else if (
-    course === "A1ちょうかい①" ||
-    course === "A1ちょうかい②" ||
-    course === "A1ちょうかい③" ||
-    course === "A1ちょうかい④" ||
-    course === "A1ちょうかい⑤" ||
-    course === "A1ちょうかい⑥"
-) {
-    button.classList.add("course-choukai");
+scoreText.textContent =
+    `　${scores[scoreKey] !== undefined ? scores[scoreKey] : 0}%`;
 
-} else if (
-    course === "A1どっかい①" ||
-    course === "A1どっかい②"
-) {
-    button.classList.add("course-dokkai");
-}
+scoreText.style.color =
+    "blue";
 
-button.textContent = course;
+scoreText.style.position =
+    "absolute";
 
-button.addEventListener("click", () => {
-    gtag('event', 'select_course', {
-        course_name: course
-    });
+scoreText.style.right =
+    "1em";
 
-    startQuiz(course);
-});
+button.style.position =
+    "relative";
+
+button.appendChild(
+    scoreText
+);
+
+button.addEventListener(
+    "click",
+    () => {
+        gtag("event", "select_section", {
+            course_name: course,
+            lesson1_name: lesson1,
+            section_name: sectionName
+        });
+
+        setTimeout(() => {
+            startQuiz(
+                course,
+                lesson1,
+                sectionName
+            );
+        }, 140);
+    }
+);
+
         container.appendChild(button);
     });
+
+    startScreen.classList.add("hidden");
+    sectionScreen.classList.remove("hidden");
+
+    window.scrollTo(0, 0);
 }
 
-function startQuiz(course) {
+function startQuiz(course, lesson1, sectionName) {
     selectedCourse = course;
+    selectedLesson = lesson1;
+    selectedSection = sectionName;
 
     confirmationMode = false;
 
-    const quizScreen = document.getElementById("quiz-screen");
+    const quizScreen =
+        document.getElementById("quiz-screen");
 
     quizScreen.className = "course-screen";
     quizScreen.dataset.course = course;
 
     currentQuestions = allQuestions.filter(
         question =>
-            String(question.course || "").trim() === course
+            String(question.course || "").trim() === course &&
+            String(question.lesson1 || "").trim() === lesson1 &&
+            String(question.sectionName || "").trim() === sectionName
     );
 
     if (currentQuestions.length === 0) {
@@ -155,6 +329,10 @@ function startQuiz(course) {
 
     document
         .getElementById("start-screen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("section-screen")
         .classList.add("hidden");
 
     document
@@ -1293,6 +1471,13 @@ const percentage =
             100
         );
 
+saveBestScore(
+    selectedCourse,
+    selectedLesson,
+    selectedSection,
+    percentage
+);
+
 showResultScreen(
     correctAnswers,
     totalAnswers,
@@ -1499,20 +1684,28 @@ document.addEventListener(
             }
         );
 
-        document
-            .getElementById("restart-button")
-            .addEventListener(
-                "click",
-                () => {
-                    document
-                        .getElementById("result-screen")
-                        .classList.add("hidden");
+document
+    .getElementById("restart-button")
+    .addEventListener(
+        "click",
+        () => {
+            document
+                .getElementById("result-screen")
+                .classList.add("hidden");
 
-                    document
-                        .getElementById("start-screen")
-                        .classList.remove("hidden");
-                }
-            );
+            document
+                .getElementById("section-screen")
+                .classList.add("hidden");
+
+            document
+                .getElementById("start-screen")
+                .classList.remove("hidden");
+
+            document
+                .getElementById("question-jump-bar")
+                .innerHTML = "";
+        }
+    );
     }
 );
 

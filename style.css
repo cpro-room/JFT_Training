@@ -72,19 +72,63 @@ button {
 }
 
 #course-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    display: block;
+    width: 100%;
+    margin-top: -20px;
+}
+
+#course-buttons > div {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+}
+
+#course-buttons > div:nth-of-type(1) {
+    padding-top: 32px;
+}
+
+#course-buttons > div:not(:last-child) {
+    margin-bottom: 20px;
+}
+
+#course-buttons > div:nth-of-type(2) {
+    margin-bottom: 45px;
+}
+
+#course-buttons > div:nth-of-type(4) {
+    margin-bottom: 45px;
 }
 
 .course-button {
     min-width: 120px;
-    background: #f8d7da;
-    border: 1px solid #e8b8bd;
+    height: 52px;
+    box-sizing: border-box;
+    background: #f9d9df;
+    border: none;
     border-radius: 12px;
-    padding: 14px 10px;
+    padding: 10px;
     font-size: 21px;
     cursor: pointer;
+
+    box-shadow:
+        4px 5px 0 rgba(0, 0, 0, 0.12),
+        7px 9px 12px rgba(0, 0, 0, 0.10);
+
+    position: relative;
+    overflow: hidden;
+
+    transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease;
+}
+
+.course-button:active {
+    transform: translate(3px, 4px);
+
+    box-shadow:
+        1px 2px 0 rgba(0, 0, 0, 0.12),
+        2px 4px 6px rgba(0, 0, 0, 0.10);
 }
 
 /* =========================
@@ -740,4 +784,81 @@ body {
 .course-dokkai {
     background: #e4d9f5;
     border-color: #c9b5df;
+}
+
+#section-screen {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#section-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 42px;
+}
+
+#section-buttons .course-button {
+    width: 240px;
+}
+
+.section-kotoba {
+    background: #e2f0d9;
+    border-color: #c6dfb8;
+}
+
+.section-kanji {
+    background: #d9eaf7;
+    border-color: #b8d4e8;
+}
+
+.section-kaiwa {
+    background: #eadcf8;
+    border-color: #d1bde5;
+}
+
+.section-choukai {
+    background: #fce4ec;
+    border-color: #e8c5d0;
+}
+
+.section-dokkai {
+    background: #dff3f0;
+    border-color: #b9ddd8;
+}
+
+#course-buttons > div:nth-of-type(3) + div .course-button {
+    background: #f8d2bd;
+}
+
+#course-buttons > div:nth-of-type(5) + div .course-button {
+    background: #fff2cc;
+}
+
+.copyright {
+    text-align: center;
+    font-size: 13px;
+    color: #888;
+    margin-top: 35px;
+    padding-bottom: 15px;
+}
+
+#course-buttons > div:nth-of-type(5),
+#course-buttons > div:nth-of-type(6) {
+    display: none;
+}
+
+@media (max-width: 600px) {
+
+    #course-buttons > div {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+    }
+
+    #course-buttons > div .course-button {
+        min-width: 0;
+        flex: 1;
+    }
 }
