@@ -1704,6 +1704,10 @@ document
             document
                 .getElementById("question-jump-bar")
                 .innerHTML = "";
+
+            document
+                .getElementById("question-number")
+                .textContent = "";
         }
     );
     }
