@@ -454,6 +454,85 @@ if (
 
 
 } else if (
+    question.section === "Section4" &&
+    question.question &&
+    question.question.trim()
+) {
+ if (
+    question.khmerQuestion &&
+    question.khmerQuestion.trim()
+) {
+    const khmerSpace =
+        document.createElement("div");
+
+    khmerSpace.style.height =
+        "47px";
+
+    questionContent.appendChild(
+        khmerSpace
+    );
+
+    const khmerText =
+        document.createElement("div");
+
+    khmerText.className =
+        "question-text khmer-question-text";
+
+    khmerText.innerHTML =
+        formatText(question.khmerQuestion);
+
+    questionContent.appendChild(
+        khmerText
+    );
+}
+
+    const questionLines =
+        String(question.question)
+            .split(/\r?\n|<br\s*\/?>/i)
+            .map(line => line.trim())
+            .filter(Boolean);
+
+    const textLines = [];
+
+    questionLines.forEach(line => {
+        const lower =
+            line.toLowerCase();
+
+        if (
+            lower.endsWith(".png") ||
+            lower.endsWith(".jpg") ||
+            lower.endsWith(".jpeg") ||
+            lower.endsWith(".gif") ||
+            lower.endsWith(".webp")
+        ) {
+            addMedia(
+                line,
+                questionContent,
+                "question"
+            );
+        } else {
+            textLines.push(line);
+        }
+    });
+
+    if (textLines.length > 0) {
+        const questionText =
+            document.createElement("div");
+
+        questionText.className =
+            "question-text";
+
+        questionText.innerHTML =
+            formatText(
+                textLines.join("\n")
+            );
+
+        questionContent.appendChild(
+            questionText
+        );
+    }
+
+} else if (
     question.question &&
     question.question.trim()
 ) {
@@ -475,6 +554,7 @@ if (
             question.section !== "Section3" &&
             question.section !== "Section1" &&
             question.section !== "Section2" &&
+            question.section !== "Section4" &&
             question.khmerQuestion &&
             question.khmerQuestion.trim()
         ) {
