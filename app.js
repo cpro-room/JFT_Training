@@ -1852,4 +1852,156 @@ function shuffleArray(array) {
     return array;
 }
 
+function createDogAnimation() {
+    const container =
+        document.getElementById("dog-animation");
+
+    if (!container) {
+        return;
+    }
+
+    const dog =
+        document.createElement("img");
+
+    const baseDogSize = 125;
+
+    const scores =
+        getBestScores();
+
+    const bestScores =
+        Object.values(scores)
+            .map(score => Number(score) || 0)
+            .sort((a, b) => b - a)
+            .slice(0, 40);
+
+    const totalScore =
+        bestScores.reduce(
+            (sum, score) => sum + score,
+            0
+        );
+
+    const dogSize =
+        baseDogSize *
+        (1 + totalScore / 4000);
+
+    dog.src = "image/dog_1.png";
+
+    dog.style.position = "absolute";
+    dog.style.width = `${dogSize}px`;
+    dog.style.height = `${dogSize}px`;
+    dog.style.objectFit = "contain";
+    dog.style.left = "0px";
+    dog.style.bottom = "0px";
+    dog.style.transformOrigin = "center center";
+
+    container.appendChild(dog);
+
+    const walkingFrames = [
+        "image/dog_1.png",
+        "image/dog_2.png",
+        "image/dog_3.png"
+    ];
+
+    let frameIndex = 0;
+    let direction = 1;
+    let position = 0;
+    let lastTime = performance.now();
+    let frameTime = 0;
+    let stateTime = 0;
+    let sitting = false;
+
+    let walkDuration =
+        2000 + Math.random() * 3000;
+
+    let sitDuration =
+        2000 + Math.random() * 3000;
+
+    function animate(time) {
+        const delta =
+            time - lastTime;
+
+        lastTime = time;
+
+        stateTime += delta;
+
+        if (sitting) {
+
+            if (stateTime >= sitDuration) {
+                sitting = false;
+                stateTime = 0;
+
+                walkDuration =
+                    2000 + Math.random() * 3000;
+
+                dog.src =
+                    walkingFrames[frameIndex];
+            }
+
+        } else {
+
+            position +=
+                direction * delta * 0.06;
+
+            const maxPosition =
+                container.clientWidth - dogSize;
+
+            if (position >= maxPosition) {
+                position = maxPosition;
+                direction = -1;
+            }
+
+            if (position <= 0) {
+                position = 0;
+                direction = 1;
+            }
+
+            if (
+                stateTime >= walkDuration &&
+                position > 20 &&
+                position < maxPosition - 20
+            ) {
+                sitting = true;
+                stateTime = 0;
+
+                sitDuration =
+                    2000 + Math.random() * 3000;
+
+                dog.src =
+                    "image/dog_4.png";
+            }
+
+            frameTime += delta;
+
+            if (frameTime >= 180) {
+                frameTime = 0;
+
+                frameIndex =
+                    (frameIndex + 1) %
+                    walkingFrames.length;
+
+                dog.src =
+                    walkingFrames[frameIndex];
+            }
+        }
+
+        dog.style.left =
+            position + "px";
+
+        dog.style.transform =
+            direction === 1
+                ? "scaleX(-1)"
+                : "scaleX(1)";
+
+        if (sitting) {
+            dog.src =
+                "image/dog_4.png";
+        }
+
+        requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+}
+
+createDogAnimation();
 loadQuestions();
