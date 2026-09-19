@@ -136,6 +136,10 @@ function createCourseButtons() {
 button.addEventListener(
     "click",
     () => {
+        gtag("event", "select_course", {
+            course_name: course
+        });
+
         gtag("event", "select_lesson", {
             course_name: course,
             lesson1_name: lesson1
