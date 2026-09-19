@@ -397,7 +397,7 @@ function showQuestion() {
             );
         }
 
-    if (
+if (
     question.section === "Section3"
 ) {
     const questionLines =
@@ -406,27 +406,42 @@ function showQuestion() {
             .map(line => line.trim())
             .filter(Boolean);
 
-    if (questionLines.length > 0) {
-        addMedia(
-            questionLines[0],
-            questionContent,
-            "question"
-        );
-    }
+    const textLines = [];
 
-    if (questionLines.length > 1) {
+    questionLines.forEach(line => {
+        const lower =
+            line.toLowerCase();
+
+        if (
+            lower.endsWith(".mp3") ||
+            lower.endsWith(".wav") ||
+            lower.endsWith(".ogg") ||
+            lower.endsWith(".png") ||
+            lower.endsWith(".jpg") ||
+            lower.endsWith(".jpeg") ||
+            lower.endsWith(".gif") ||
+            lower.endsWith(".webp")
+        ) {
+            addMedia(
+                line,
+                questionContent,
+                "question"
+            );
+        } else {
+            textLines.push(line);
+        }
+    });
+
+    if (textLines.length > 0) {
         const questionText =
             document.createElement("div");
 
         questionText.className =
             "question-text";
 
-        questionText.style.marginTop =
-            "1em";
-
         questionText.innerHTML =
             formatText(
-                questionLines.slice(1).join("\n")
+                textLines.join("\n")
             );
 
         questionContent.appendChild(
@@ -435,8 +450,8 @@ function showQuestion() {
 
         questionContent.style.marginBottom =
             "0.5em";
-
     }
+
 
 } else if (
     question.question &&
@@ -1753,9 +1768,13 @@ function addMedia(
                 audio.className =
                     "audio-player";
 
-    audio.src =
+   audio.src =
     path.includes("/")
-        ? path
+        ? (
+            path.startsWith("audio/")
+                ? path
+                : `audio/${path.split("/").pop()}`
+        )
         : `audio/${path}`;
 
                 container.appendChild(
