@@ -1985,7 +1985,7 @@ function createDogAnimation() {
 
     const dogSize =
         baseDogSize *
-        (1 + totalScore / 4000);
+        (1 + totalScore / 3000);
 
     dog.src = "image/dog_1.png";
 
