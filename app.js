@@ -1987,7 +1987,16 @@ function createDogAnimation() {
         baseDogSize *
         (1 + totalScore / 3000);
 
-    dog.src = "image/dog_1.png";
+    const isFatDog =
+    totalScore > 3000;
+
+const dogPrefix =
+    isFatDog
+        ? "image/dog2_"
+        : "image/dog_";
+
+dog.src =
+    `${dogPrefix}1.png`;
 
     dog.style.position = "absolute";
     dog.style.width = `${dogSize}px`;
@@ -1999,11 +2008,11 @@ function createDogAnimation() {
 
     container.appendChild(dog);
 
-    const walkingFrames = [
-        "image/dog_1.png",
-        "image/dog_2.png",
-        "image/dog_3.png"
-    ];
+const walkingFrames = [
+    `${dogPrefix}1.png`,
+    `${dogPrefix}2.png`,
+    `${dogPrefix}3.png`
+];
 
     let frameIndex = 0;
     let direction = 1;
@@ -2069,8 +2078,8 @@ function createDogAnimation() {
                 sitDuration =
                     2000 + Math.random() * 3000;
 
-                dog.src =
-                    "image/dog_4.png";
+       dog.src =
+    `${dogPrefix}4.png`;
             }
 
             frameTime += delta;
@@ -2096,8 +2105,8 @@ function createDogAnimation() {
                 : "scaleX(1)";
 
         if (sitting) {
-            dog.src =
-                "image/dog_4.png";
+     dog.src =
+    `${dogPrefix}4.png`;
         }
 
         requestAnimationFrame(animate);
