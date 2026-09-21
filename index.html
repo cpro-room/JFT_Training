@@ -11,6 +11,10 @@
 <!-- Google Analytics -->
 
 <script>
+if (new URLSearchParams(location.search).get("exclude_ga") === "1") {
+    localStorage.setItem("exclude_ga", "true");
+}
+
 const excludeGA =
     localStorage.getItem("exclude_ga") === "true";
 
