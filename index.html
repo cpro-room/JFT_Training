@@ -10,20 +10,38 @@
 
 <!-- Google Analytics -->
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-DDD1Y5SELD"></script>
-
 <script>
+const excludeGA =
+    localStorage.getItem("exclude_ga") === "true";
 
-window.dataLayer = window.dataLayer || [];
+if (!excludeGA) {
 
-function gtag() {
-  dataLayer.push(arguments);
+    const gaScript =
+        document.createElement("script");
+
+    gaScript.async = true;
+    gaScript.src =
+        "https://www.googletagmanager.com/gtag/js?id=G-DDD1Y5SELD";
+
+    document.head.appendChild(gaScript);
+
+    window.dataLayer =
+        window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-DDD1Y5SELD');
+
+} else {
+
+    function gtag() {
+    }
+
 }
-
-gtag('js', new Date());
-
-gtag('config', 'G-DDD1Y5SELD');
-
 </script>
 
 </head>
