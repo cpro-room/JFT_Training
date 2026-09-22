@@ -36,20 +36,14 @@ function getScoreKey(course, lesson1, sectionName) {
     return `${course}__${lesson1}__${sectionName}`;
 }
 
-function saveBestScore(
-    course,
-    lesson1,
-    sectionName,
-    percentage
-) {
+function saveBestScore(course, lesson1, sectionName, percentage) {
     const scores = getBestScores();
 
-    const key =
-        getScoreKey(
-            course,
-            lesson1,
-            sectionName
-        );
+    const key = getScoreKey(
+        course,
+        lesson1,
+        sectionName
+    );
 
     if (
         scores[key] === undefined ||
@@ -69,16 +63,16 @@ async function loadQuestions() {
         const response = await fetch("questions.json");
 
         if (!response.ok) {
-            throw new Error("questions.json を読み込めませんでした。");
+            throw new Error(
+                "questions.json を読み込めませんでした。"
+            );
         }
 
         allQuestions = await response.json();
 
         createCourseButtons();
-
     } catch (error) {
         console.error(error);
-
         alert("問題データを読み込めませんでした。");
     }
 }
@@ -90,12 +84,10 @@ function createCourseButtons() {
     container.innerHTML = "";
 
     displayedCourses.forEach(course => {
-
         const title =
             document.createElement("div");
 
         title.textContent = course;
-
         title.style.textAlign = "center";
         title.style.fontSize = "22px";
         title.style.fontWeight = "bold";
@@ -112,7 +104,6 @@ function createCourseButtons() {
         lessonContainer.style.flexWrap = "wrap";
 
         displayedLessons.forEach(lesson1 => {
-
             const exists =
                 allQuestions.some(
                     question =>
@@ -127,38 +118,34 @@ function createCourseButtons() {
             const button =
                 document.createElement("button");
 
-            button.className =
-                "course-button";
+            button.className = "course-button";
+            button.textContent = lesson1;
 
-            button.textContent =
-                lesson1;
+            button.addEventListener(
+                "click",
+                () => {
+                    gtag("event", "select_course", {
+                        course_name: course
+                    });
 
-button.addEventListener(
-    "click",
-    () => {
-        gtag("event", "select_course", {
-            course_name: course
-        });
+                    gtag("event", "select_lesson", {
+                        course_name: course,
+                        lesson1_name: lesson1
+                    });
 
-        gtag("event", "select_lesson", {
-            course_name: course,
-            lesson1_name: lesson1
-        });
-
-        setTimeout(() => {
-            showSectionButtons(
-                course,
-                lesson1
+                    setTimeout(() => {
+                        showSectionButtons(
+                            course,
+                            lesson1
+                        );
+                    }, 140);
+                }
             );
-        }, 140);
-    }
-);
+
             lessonContainer.appendChild(button);
         });
 
-        container.appendChild(
-            lessonContainer
-        );
+        container.appendChild(lessonContainer);
     });
 }
 
@@ -177,7 +164,6 @@ function showSectionButtons(course, lesson1) {
     const sections = [];
 
     allQuestions.forEach(question => {
-
         if (
             String(question.course || "").trim() === course &&
             String(question.lesson1 || "").trim() === lesson1
@@ -195,95 +181,93 @@ function showSectionButtons(course, lesson1) {
     });
 
     sections.forEach(sectionName => {
+        const button =
+            document.createElement("button");
 
- const button =
-    document.createElement("button");
+        button.className = "course-button";
 
-button.className =
-    "course-button";
+        if (sectionName.startsWith("ことば")) {
+            button.classList.add("section-kotoba");
+        } else if (sectionName.startsWith("かんじ")) {
+            button.classList.add("section-kanji");
+        } else if (sectionName.startsWith("かいわ")) {
+            button.classList.add("section-kaiwa");
+        } else if (sectionName.startsWith("ちょうかい")) {
+            button.classList.add("section-choukai");
+        } else if (sectionName.startsWith("どっかい")) {
+            button.classList.add("section-dokkai");
+        }
 
-if (sectionName.startsWith("ことば")) {
-    button.classList.add("section-kotoba");
+        const scores = getBestScores();
 
-} else if (sectionName.startsWith("かんじ")) {
-    button.classList.add("section-kanji");
-
-} else if (sectionName.startsWith("かいわ")) {
-    button.classList.add("section-kaiwa");
-
-} else if (sectionName.startsWith("ちょうかい")) {
-    button.classList.add("section-choukai");
-
-} else if (sectionName.startsWith("どっかい")) {
-    button.classList.add("section-dokkai");
-}
-
-const scores =
-    getBestScores();
-
-const scoreKey =
-    getScoreKey(
-        course,
-        lesson1,
-        sectionName
-    );
-
-const sectionText =
-    document.createElement("span");
-
-sectionText.textContent =
-    sectionName;
-
-sectionText.style.paddingRight =
-    "4em";
-
-button.appendChild(
-    sectionText
-);
-
-const scoreText =
-    document.createElement("span");
-
-scoreText.textContent =
-    `　${scores[scoreKey] !== undefined ? scores[scoreKey] : 0}%`;
-
-scoreText.style.color =
-    "blue";
-
-scoreText.style.position =
-    "absolute";
-
-scoreText.style.right =
-    "1em";
-
-button.style.position =
-    "relative";
-
-button.appendChild(
-    scoreText
-);
-
-button.addEventListener(
-    "click",
-    () => {
-        gtag("event", "select_section", {
-            course_name: course,
-            lesson1_name: lesson1,
-            section_name: sectionName
-        });
-
-        setTimeout(() => {
-            startQuiz(
+        const scoreKey =
+            getScoreKey(
                 course,
                 lesson1,
                 sectionName
             );
-        }, 140);
-    }
-);
+
+        const sectionText =
+            document.createElement("span");
+
+        sectionText.textContent = sectionName;
+        sectionText.style.paddingRight = "4em";
+
+        button.appendChild(sectionText);
+
+        const scoreText =
+            document.createElement("span");
+
+        scoreText.textContent =
+            `　${scores[scoreKey] !== undefined ? scores[scoreKey] : 0}%`;
+
+        scoreText.style.color = "blue";
+        scoreText.style.position = "absolute";
+        scoreText.style.right = "1em";
+
+        button.style.position = "relative";
+
+        button.appendChild(scoreText);
+
+        button.addEventListener(
+            "click",
+            () => {
+                gtag("event", "select_section", {
+                    course_name: course,
+                    lesson1_name: lesson1,
+                    section_name: sectionName
+                });
+
+                setTimeout(() => {
+                    startQuiz(
+                        course,
+                        lesson1,
+                        sectionName
+                    );
+                }, 140);
+            }
+        );
 
         container.appendChild(button);
     });
+
+    const backButton =
+        document.createElement("button");
+
+    backButton.className = "section-back-button";
+    backButton.textContent = "Back";
+
+    backButton.addEventListener(
+        "click",
+        () => {
+            sectionScreen.classList.add("hidden");
+            startScreen.classList.remove("hidden");
+
+            window.scrollTo(0, 0);
+        }
+    );
+
+    container.appendChild(backButton);
 
     startScreen.classList.add("hidden");
     sectionScreen.classList.remove("hidden");
@@ -321,7 +305,6 @@ function startQuiz(course, lesson1, sectionName) {
     shuffleArray(currentQuestions);
 
     currentQuestionIndex = 0;
-    confirmationMode = false;
 
     displayedChoiceSets =
         new Array(currentQuestions.length).fill(null);
@@ -379,8 +362,7 @@ function showQuestion() {
         const questionContent =
             document.createElement("div");
 
-        questionContent.className =
-            "question-content";
+        questionContent.className = "question-content";
 
         if (
             question.section === "Section3" &&
@@ -396,163 +378,152 @@ function showQuestion() {
             khmerText.innerHTML =
                 formatText(question.khmerQuestion);
 
+            questionContent.appendChild(khmerText);
+        }
+
+        if (question.section === "Section3") {
+            const questionLines =
+                String(question.question || "")
+                    .split(/\r?\n|<br\s*\/?>/i)
+                    .map(line => line.trim())
+                    .filter(Boolean);
+
+            const textLines = [];
+
+            questionLines.forEach(line => {
+                const lower =
+                    line.toLowerCase();
+
+                if (
+                    lower.endsWith(".mp3") ||
+                    lower.endsWith(".wav") ||
+                    lower.endsWith(".ogg") ||
+                    lower.endsWith(".png") ||
+                    lower.endsWith(".jpg") ||
+                    lower.endsWith(".jpeg") ||
+                    lower.endsWith(".gif") ||
+                    lower.endsWith(".webp")
+                ) {
+                    addMedia(
+                        line,
+                        questionContent,
+                        "question"
+                    );
+                } else {
+                    textLines.push(line);
+                }
+            });
+
+            if (textLines.length > 0) {
+                const questionText =
+                    document.createElement("div");
+
+                questionText.className = "question-text";
+
+                questionText.innerHTML =
+                    formatText(
+                        textLines.join("\n")
+                    );
+
+                questionContent.appendChild(
+                    questionText
+                );
+
+                questionContent.style.marginBottom =
+                    "0.5em";
+            }
+        } else if (
+            question.section === "Section4" &&
+            question.question &&
+            question.question.trim()
+        ) {
+            if (
+                question.khmerQuestion &&
+                question.khmerQuestion.trim()
+            ) {
+                const khmerSpace =
+                    document.createElement("div");
+
+                khmerSpace.style.height = "47px";
+
+                questionContent.appendChild(
+                    khmerSpace
+                );
+
+                const khmerText =
+                    document.createElement("div");
+
+                khmerText.className =
+                    "question-text khmer-question-text";
+
+                khmerText.innerHTML =
+                    formatText(question.khmerQuestion);
+
+                questionContent.appendChild(
+                    khmerText
+                );
+            }
+
+            const questionLines =
+                String(question.question)
+                    .split(/\r?\n|<br\s*\/?>/i)
+                    .map(line => line.trim())
+                    .filter(Boolean);
+
+            const textLines = [];
+
+            questionLines.forEach(line => {
+                const lower =
+                    line.toLowerCase();
+
+                if (
+                    lower.endsWith(".png") ||
+                    lower.endsWith(".jpg") ||
+                    lower.endsWith(".jpeg") ||
+                    lower.endsWith(".gif") ||
+                    lower.endsWith(".webp")
+                ) {
+                    addMedia(
+                        line,
+                        questionContent,
+                        "question"
+                    );
+                } else {
+                    textLines.push(line);
+                }
+            });
+
+            if (textLines.length > 0) {
+                const questionText =
+                    document.createElement("div");
+
+                questionText.className = "question-text";
+
+                questionText.innerHTML =
+                    formatText(
+                        textLines.join("\n")
+                    );
+
+                questionContent.appendChild(
+                    questionText
+                );
+            }
+        } else if (
+            question.question &&
+            question.question.trim()
+        ) {
+            const questionText =
+                document.createElement("div");
+
+            questionText.className = "question-text";
+
+            questionText.innerHTML =
+                formatText(question.question);
+
             questionContent.appendChild(
-                khmerText
+                questionText
             );
         }
-
-if (
-    question.section === "Section3"
-) {
-    const questionLines =
-        String(question.question || "")
-            .split(/\r?\n|<br\s*\/?>/i)
-            .map(line => line.trim())
-            .filter(Boolean);
-
-    const textLines = [];
-
-    questionLines.forEach(line => {
-        const lower =
-            line.toLowerCase();
-
-        if (
-            lower.endsWith(".mp3") ||
-            lower.endsWith(".wav") ||
-            lower.endsWith(".ogg") ||
-            lower.endsWith(".png") ||
-            lower.endsWith(".jpg") ||
-            lower.endsWith(".jpeg") ||
-            lower.endsWith(".gif") ||
-            lower.endsWith(".webp")
-        ) {
-            addMedia(
-                line,
-                questionContent,
-                "question"
-            );
-        } else {
-            textLines.push(line);
-        }
-    });
-
-    if (textLines.length > 0) {
-        const questionText =
-            document.createElement("div");
-
-        questionText.className =
-            "question-text";
-
-        questionText.innerHTML =
-            formatText(
-                textLines.join("\n")
-            );
-
-        questionContent.appendChild(
-            questionText
-        );
-
-        questionContent.style.marginBottom =
-            "0.5em";
-    }
-
-
-} else if (
-    question.section === "Section4" &&
-    question.question &&
-    question.question.trim()
-) {
- if (
-    question.khmerQuestion &&
-    question.khmerQuestion.trim()
-) {
-    const khmerSpace =
-        document.createElement("div");
-
-    khmerSpace.style.height =
-        "47px";
-
-    questionContent.appendChild(
-        khmerSpace
-    );
-
-    const khmerText =
-        document.createElement("div");
-
-    khmerText.className =
-        "question-text khmer-question-text";
-
-    khmerText.innerHTML =
-        formatText(question.khmerQuestion);
-
-    questionContent.appendChild(
-        khmerText
-    );
-}
-
-    const questionLines =
-        String(question.question)
-            .split(/\r?\n|<br\s*\/?>/i)
-            .map(line => line.trim())
-            .filter(Boolean);
-
-    const textLines = [];
-
-    questionLines.forEach(line => {
-        const lower =
-            line.toLowerCase();
-
-        if (
-            lower.endsWith(".png") ||
-            lower.endsWith(".jpg") ||
-            lower.endsWith(".jpeg") ||
-            lower.endsWith(".gif") ||
-            lower.endsWith(".webp")
-        ) {
-            addMedia(
-                line,
-                questionContent,
-                "question"
-            );
-        } else {
-            textLines.push(line);
-        }
-    });
-
-    if (textLines.length > 0) {
-        const questionText =
-            document.createElement("div");
-
-        questionText.className =
-            "question-text";
-
-        questionText.innerHTML =
-            formatText(
-                textLines.join("\n")
-            );
-
-        questionContent.appendChild(
-            questionText
-        );
-    }
-
-} else if (
-    question.question &&
-    question.question.trim()
-) {
-    const questionText =
-        document.createElement("div");
-
-    questionText.className =
-        "question-text";
-
-    questionText.innerHTML =
-        formatText(question.question);
-
-    questionContent.appendChild(
-        questionText
-    );
-}
 
         if (
             question.section !== "Section3" &&
@@ -590,14 +561,11 @@ if (
             question,
             questionArea
         );
-
     } else {
         const firstSubQuestionIndex =
             question.question.search(/\(\d+\)/);
 
-        if (
-            firstSubQuestionIndex > 0
-        ) {
+        if (firstSubQuestionIndex > 0) {
             let intro =
                 question.question.substring(
                     0,
@@ -613,8 +581,7 @@ if (
                 const questionText =
                     document.createElement("div");
 
-                questionText.className =
-                    "question-text";
+                questionText.className = "question-text";
 
                 questionText.innerHTML =
                     formatText(intro);
@@ -632,12 +599,13 @@ if (
             const khmerText =
                 document.createElement("div");
 
-            khmerText.className =
-                "question-text";
+            khmerText.className = "question-text";
 
             const khmerIntro =
                 question.section === "Section3"
-                    ? question.khmerQuestion.split(/\(\d+\)/)[0].trim()
+                    ? question.khmerQuestion
+                        .split(/\(\d+\)/)[0]
+                        .trim()
                     : question.khmerQuestion;
 
             khmerText.innerHTML =
@@ -666,9 +634,7 @@ if (
                     /([^<>\s]+\.(png|jpg|jpeg|gif|webp))/i
                 );
 
-            if (
-                questionImageMatch
-            ) {
+            if (questionImageMatch) {
                 addMedia(
                     questionImageMatch[1],
                     questionArea,
@@ -689,7 +655,8 @@ if (
 }
 
 function showNormalChoices(question, container) {
-    const questionIndex = currentQuestionIndex;
+    const questionIndex =
+        currentQuestionIndex;
 
     let choices =
         displayedChoiceSets[questionIndex];
@@ -737,11 +704,8 @@ function parseSubQuestions(text) {
 
         if (match) {
             result.push({
-                number:
-                    Number(match[1]),
-
-                text:
-                    match[2].trim()
+                number: Number(match[1]),
+                text: match[2].trim()
             });
         }
     });
@@ -763,17 +727,13 @@ function showSubQuestions(
     subQuestions.forEach(
         (subQuestion, index) => {
             const subContainer =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
             subContainer.className =
                 "subquestion";
 
             const title =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
             title.className =
                 "subquestion-text";
@@ -781,9 +741,7 @@ function showSubQuestions(
             title.innerHTML =
                 `(${subQuestion.number}) ${formatText(subQuestion.text)}`;
 
-            subContainer.appendChild(
-                title
-            );
+            subContainer.appendChild(title);
 
             const choices =
                 choiceGroups[index] || [];
@@ -809,12 +767,8 @@ function createChoiceGroups(
     const questionIndex =
         currentQuestionIndex;
 
-    if (
-        displayedChoiceSets[questionIndex]
-    ) {
-        return displayedChoiceSets[
-            questionIndex
-        ];
+    if (displayedChoiceSets[questionIndex]) {
+        return displayedChoiceSets[questionIndex];
     }
 
     const groups = [];
@@ -826,58 +780,46 @@ function createChoiceGroups(
     ) {
         const choices = [];
 
-        (question.choices || [])
-            .forEach(choice => {
-                const textParts =
-                    String(choice.text || "")
-                        .split(/<br\s*\/?>/i)
-                        .map(value =>
-                            value.trim()
-                        );
+        (question.choices || []).forEach(choice => {
+            const textParts =
+                String(choice.text || "")
+                    .split(/<br\s*\/?>/i)
+                    .map(value => value.trim());
 
-                const imageParts =
-                    splitMediaValues(
-                        choice.image
-                    );
+            const imageParts =
+                splitMediaValues(choice.image);
 
-                const audioParts =
-                    splitMediaValues(
-                        choice.audio
-                    );
+            const audioParts =
+                splitMediaValues(choice.audio);
 
-                let text =
-                    textParts[i] || "";
+            let text =
+                textParts[i] || "";
 
-                let image =
-                    imageParts[i] || "";
+            let image =
+                imageParts[i] || "";
 
-                if (
-                    /\.(png|jpg|jpeg|gif|webp)$/i.test(
-                        text
-                    )
-                ) {
-                    image = text;
-                    text = "";
-                }
+            if (
+                /\.(png|jpg|jpeg|gif|webp)$/i.test(text)
+            ) {
+                image = text;
+                text = "";
+            }
 
-                choices.push({
-                    text: text,
-                    image: image,
-                    audio:
-                        audioParts[i] || "",
-                    correct:
-                        choice.correct === true
-                });
+            choices.push({
+                text: text,
+                image: image,
+                audio: audioParts[i] || "",
+                correct: choice.correct === true
             });
+        });
 
         groups.push(
             prepareChoices(choices)
         );
     }
 
-    displayedChoiceSets[
-        questionIndex
-    ] = groups;
+    displayedChoiceSets[questionIndex] =
+        groups;
 
     return groups;
 }
@@ -912,8 +854,7 @@ function showChoices(
     const list =
         document.createElement("div");
 
-    list.className =
-        "choice-list";
+    list.className = "choice-list";
 
     const question =
         currentQuestions[questionIndex];
@@ -923,11 +864,9 @@ function showChoices(
         question.section === "Section4";
 
     choices.forEach(
-        (choice, choiceIndex) => {
+        choice => {
             const button =
-                document.createElement(
-                    "button"
-                );
+                document.createElement("button");
 
             button.className =
                 "choice-button";
@@ -942,18 +881,14 @@ function showChoices(
             }
 
             const content =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
             content.className =
                 "choice-content";
 
             if (choice.text) {
                 const text =
-                    document.createElement(
-                        "span"
-                    );
+                    document.createElement("span");
 
                 text.className =
                     "choice-text";
@@ -961,9 +896,7 @@ function showChoices(
                 text.innerHTML =
                     formatText(choice.text);
 
-                content.appendChild(
-                    text
-                );
+                content.appendChild(text);
             }
 
             addMedia(
@@ -978,9 +911,7 @@ function showChoices(
                 "choice"
             );
 
-            button.appendChild(
-                content
-            );
+            button.appendChild(content);
 
             const savedAnswer =
                 userAnswers[questionIndex] &&
@@ -991,9 +922,7 @@ function showChoices(
                 savedAnswer.choiceIndex ===
                     choice._choiceIndex
             ) {
-                button.classList.add(
-                    "selected"
-                );
+                button.classList.add("selected");
             }
 
             if (!confirmationMode) {
@@ -1029,19 +958,14 @@ function showChoices(
                 );
             } else {
                 button.disabled = true;
-                button.style.pointerEvents =
-                    "none";
+                button.style.pointerEvents = "none";
             }
 
-            list.appendChild(
-                button
-            );
+            list.appendChild(button);
         }
     );
 
-    container.appendChild(
-        list
-    );
+    container.appendChild(list);
 
     requestAnimationFrame(() => {
         fitChoiceText(list);
@@ -1056,14 +980,10 @@ function fitChoiceText(container) {
 
     buttons.forEach(button => {
         const content =
-            button.querySelector(
-                ".choice-content"
-            );
+            button.querySelector(".choice-content");
 
         const text =
-            button.querySelector(
-                ".choice-text"
-            );
+            button.querySelector(".choice-text");
 
         if (!content || !text) {
             return;
@@ -1081,36 +1001,17 @@ function fitChoiceText(container) {
         const style =
             window.getComputedStyle(text);
 
-        measure.style.position =
-            "absolute";
+        measure.style.position = "absolute";
+        measure.style.visibility = "hidden";
+        measure.style.whiteSpace = "nowrap";
+        measure.style.width = "max-content";
+        measure.style.fontFamily = style.fontFamily;
+        measure.style.fontWeight = style.fontWeight;
+        measure.style.fontStyle = style.fontStyle;
+        measure.style.letterSpacing = style.letterSpacing;
+        measure.style.fontSize = `${maxFontSize}px`;
 
-        measure.style.visibility =
-            "hidden";
-
-        measure.style.whiteSpace =
-            "nowrap";
-
-        measure.style.width =
-            "max-content";
-
-        measure.style.fontFamily =
-            style.fontFamily;
-
-        measure.style.fontWeight =
-            style.fontWeight;
-
-        measure.style.fontStyle =
-            style.fontStyle;
-
-        measure.style.letterSpacing =
-            style.letterSpacing;
-
-        measure.style.fontSize =
-            `${maxFontSize}px`;
-
-        document.body.appendChild(
-            measure
-        );
+        document.body.appendChild(measure);
 
         const textWidth =
             measure.getBoundingClientRect().width;
@@ -1120,9 +1021,7 @@ function fitChoiceText(container) {
 
         measure.remove();
 
-        if (
-            textWidth <= availableWidth
-        ) {
+        if (textWidth <= availableWidth) {
             text.style.fontSize =
                 `${maxFontSize}px`;
 
@@ -1162,21 +1061,13 @@ function saveAnswer(
     subIndex,
     choice
 ) {
-    if (
-        !userAnswers[questionIndex]
-    ) {
-        userAnswers[questionIndex] =
-            [];
+    if (!userAnswers[questionIndex]) {
+        userAnswers[questionIndex] = [];
     }
 
-    userAnswers[
-        questionIndex
-    ][subIndex] = {
-        correct:
-            choice.correct,
-
-        choiceIndex:
-            choice._choiceIndex
+    userAnswers[questionIndex][subIndex] = {
+        correct: choice.correct,
+        choiceIndex: choice._choiceIndex
     };
 }
 
@@ -1185,11 +1076,8 @@ document
     .addEventListener(
         "click",
         () => {
-            if (
-                currentQuestionIndex > 0
-            ) {
+            if (currentQuestionIndex > 0) {
                 currentQuestionIndex--;
-
                 showQuestion();
             }
         }
@@ -1197,24 +1085,19 @@ document
 
 function updateNextButton() {
     const button =
-        document.getElementById(
-            "next-button"
-        );
+        document.getElementById("next-button");
 
     if (
         currentQuestionIndex ===
         currentQuestions.length - 1
     ) {
-        button.textContent =
-            "Finish";
+        button.textContent = "Finish";
 
         button.classList.add(
             "finish-button"
         );
-
     } else {
-        button.textContent =
-            "Next";
+        button.textContent = "Next";
 
         button.classList.remove(
             "finish-button"
@@ -1232,24 +1115,25 @@ document
                 currentQuestions.length - 1
             ) {
                 currentQuestionIndex++;
-
                 showQuestion();
-
             } else {
-         if (confirmationMode) {
-    document
-        .querySelectorAll("audio")
-        .forEach(audio => audio.pause());
+                if (confirmationMode) {
+                    document
+                        .querySelectorAll("audio")
+                        .forEach(audio => audio.pause());
 
-    document
-        .getElementById("quiz-screen")
-        .classList.add("hidden");
+                    document
+                        .getElementById("quiz-screen")
+                        .classList.add("hidden");
+
+                    document
+                        .getElementById("question-number")
+                        .textContent = "";
 
                     document
                         .getElementById("result-screen")
                         .classList.remove("hidden");
-
-                          } else {
+                } else {
                     document
                         .querySelectorAll("audio")
                         .forEach(audio => audio.pause());
@@ -1268,51 +1152,24 @@ function createQuestionJumpButtons() {
 
     bar.innerHTML = "";
 
-    bar.style.position =
-        "absolute";
-
-    bar.style.left =
-        "0";
-
-    bar.style.top =
-        "86px";
-
-    bar.style.width =
-        "46px";
-
-    bar.style.height =
-        "auto";
-
-    bar.style.display =
-        "block";
-
-    bar.style.padding =
-        "4px";
-
-    bar.style.margin =
-        "0";
-
-    bar.style.overflow =
-        "visible";
-
-    bar.style.background =
-        "#ffffff";
-
-    bar.style.borderRight =
-        "1px solid #ccc";
-
-    bar.style.borderTop =
-        "none";
-
-    bar.style.zIndex =
-        "1000";
+    bar.style.position = "absolute";
+    bar.style.left = "0";
+    bar.style.top = "86px";
+    bar.style.width = "46px";
+    bar.style.height = "auto";
+    bar.style.display = "block";
+    bar.style.padding = "4px";
+    bar.style.margin = "0";
+    bar.style.overflow = "visible";
+    bar.style.background = "#ffffff";
+    bar.style.borderRight = "1px solid #ccc";
+    bar.style.borderTop = "none";
+    bar.style.zIndex = "1000";
 
     currentQuestions.forEach(
         (question, index) => {
             const button =
-                document.createElement(
-                    "button"
-                );
+                document.createElement("button");
 
             button.className =
                 "question-jump-button";
@@ -1320,41 +1177,26 @@ function createQuestionJumpButtons() {
             button.textContent =
                 index + 1;
 
-            button.style.display =
-                "block";
-
-            button.style.width =
-                "38px";
-
-            button.style.minWidth =
-                "38px";
-
-            button.style.height =
-                "34px";
-
-            button.style.margin =
-                "0 0 4px 0";
-
-            button.style.padding =
-                "0";
+            button.style.display = "block";
+            button.style.width = "38px";
+            button.style.minWidth = "38px";
+            button.style.height = "34px";
+            button.style.margin = "0 0 4px 0";
+            button.style.padding = "0";
 
             button.addEventListener(
                 "click",
                 () => {
-                    currentQuestionIndex =
-                        index;
+                    currentQuestionIndex = index;
 
                     showQuestion();
-
                     updateQuestionJumpButtons();
 
                     window.scrollTo(0, 0);
                 }
             );
 
-            bar.appendChild(
-                button
-            );
+            bar.appendChild(button);
         }
     );
 
@@ -1377,18 +1219,16 @@ function updateQuestionJumpButtons() {
             const question =
                 currentQuestions[index];
 
- const subQuestions =
-    parseSubQuestions(
-        question.section === "Section3"
-            ? question.khmerQuestion
-            : question.question
-    );
+            const subQuestions =
+                parseSubQuestions(
+                    question.section === "Section3"
+                        ? question.khmerQuestion
+                        : question.question
+                );
 
             let answered = false;
 
-            if (
-                subQuestions.length > 0
-            ) {
+            if (subQuestions.length > 0) {
                 const answers =
                     userAnswers[index];
 
@@ -1400,12 +1240,9 @@ function updateQuestionJumpButtons() {
                         (_, subIndex) =>
                             answers[subIndex]
                     );
-
             } else {
                 answered =
-                    Array.isArray(
-                        userAnswers[index]
-                    ) &&
+                    Array.isArray(userAnswers[index]) &&
                     userAnswers[index].some(
                         answer => answer
                     );
@@ -1434,8 +1271,6 @@ function updateQuestionJumpBarHeight() {
 }
 
 function calculateResult() {
-    let correctCount = 0;
-
     questionResults = [];
 
     currentQuestions.forEach(
@@ -1443,7 +1278,7 @@ function calculateResult() {
             const answers =
                 userAnswers[index];
 
-               const subQuestions =
+            const subQuestions =
                 parseSubQuestions(
                     question.section === "Section3"
                         ? question.khmerQuestion
@@ -1453,9 +1288,7 @@ function calculateResult() {
             let correct = false;
             let subResults = [];
 
-            if (
-                subQuestions.length > 0
-            ) {
+            if (subQuestions.length > 0) {
                 subResults =
                     subQuestions.map(
                         (_, subIndex) => {
@@ -1481,7 +1314,6 @@ function calculateResult() {
                         result =>
                             result.correct === true
                     );
-
             } else if (
                 Array.isArray(answers) &&
                 answers.length > 0
@@ -1494,16 +1326,9 @@ function calculateResult() {
                     );
             }
 
-            if (correct) {
-                correctCount++;
-            }
-
             questionResults.push({
-                questionNumber:
-                    index + 1,
-
+                questionNumber: index + 1,
                 correct,
-
                 subResults:
                     question.section === "Section4" ||
                     question.section === "Section3"
@@ -1513,75 +1338,72 @@ function calculateResult() {
         }
     );
 
-let totalAnswers = 0;
-let correctAnswers = 0;
+    let totalAnswers = 0;
+    let correctAnswers = 0;
 
-currentQuestions.forEach(
-    (question, index) => {
-        const answers =
-            userAnswers[index];
+    currentQuestions.forEach(
+        (question, index) => {
+            const answers =
+                userAnswers[index];
 
-        const subQuestions =
-            parseSubQuestions(
-                question.section === "Section3"
-                    ? question.khmerQuestion
-                    : question.question
-            );
+            const subQuestions =
+                parseSubQuestions(
+                    question.section === "Section3"
+                        ? question.khmerQuestion
+                        : question.question
+                );
 
-        if (subQuestions.length > 0) {
-            totalAnswers +=
-                subQuestions.length;
+            if (subQuestions.length > 0) {
+                totalAnswers +=
+                    subQuestions.length;
 
-            if (Array.isArray(answers)) {
-                correctAnswers +=
-                    answers.filter(
+                if (Array.isArray(answers)) {
+                    correctAnswers +=
+                        answers.filter(
+                            answer =>
+                                answer &&
+                                answer.correct === true
+                        ).length;
+                }
+            } else {
+                totalAnswers++;
+
+                if (
+                    Array.isArray(answers) &&
+                    answers.length > 0 &&
+                    answers.every(
                         answer =>
                             answer &&
                             answer.correct === true
-                    ).length;
-            }
-        } else {
-            totalAnswers++;
-
-            if (
-                Array.isArray(answers) &&
-                answers.length > 0 &&
-                answers.every(
-                    answer =>
-                        answer &&
-                        answer.correct === true
-                )
-            ) {
-                correctAnswers++;
+                    )
+                ) {
+                    correctAnswers++;
+                }
             }
         }
-    }
-);
+    );
 
-const total =
-    currentQuestions.length;
+    const percentage =
+        totalAnswers === 0
+            ? 0
+            : Math.round(
+                correctAnswers /
+                totalAnswers *
+                100
+            );
 
-const percentage =
-    totalAnswers === 0
-        ? 0
-        : Math.round(
-            correctAnswers /
-            totalAnswers *
-            100
-        );
+    saveBestScore(
+        selectedCourse,
+        selectedLesson,
+        selectedSection,
+        percentage
+    );
 
-saveBestScore(
-    selectedCourse,
-    selectedLesson,
-    selectedSection,
-    percentage
-);
-
-showResultScreen(
-    correctAnswers,
-    totalAnswers,
-    percentage
-);
+    showResultScreen(
+        correctAnswers,
+        totalAnswers,
+        percentage
+    );
 }
 
 function showResultScreen(
@@ -1594,31 +1416,57 @@ function showResultScreen(
         .classList.add("hidden");
 
     document
+        .getElementById("question-number")
+        .textContent = "";
+
+    document
         .getElementById("result-screen")
         .classList.remove("hidden");
+
+    const resultTitle =
+        document.querySelector(
+            "#result-screen h1"
+        );
+
+    resultTitle.innerHTML =
+        `<ruby>結果<rt>けっか</rt></ruby>　លទ្ធផល`;
+
+    const oldResultInfo =
+        document.querySelector(
+            "#result-screen .result-info"
+        );
+
+    if (oldResultInfo) {
+        oldResultInfo.remove();
+    }
+
+    const resultInfo =
+        document.createElement("div");
+
+    resultInfo.className =
+        "result-info";
+
+    resultInfo.innerHTML =
+        `${selectedCourse}&nbsp;&nbsp;${selectedLesson}&nbsp;&nbsp;${selectedSection}`;
+
+    resultTitle.insertAdjacentElement(
+        "afterend",
+        resultInfo
+    );
 
     document
         .getElementById("score")
         .textContent =
         `${percentage}%`;
 
-    document
-        .getElementById("correct-count")
-        .textContent =
-        `${correctCount} / ${total}`;
+    const list =
+        document.getElementById(
+            "result-list"
+        );
 
-   const list =
-    document.getElementById(
-        "result-list"
-    );
-
-list.style.width =
-    "fit-content";
-
-list.style.margin =
-    "0 auto";
-
-list.innerHTML = "";
+    list.style.width = "fit-content";
+    list.style.margin = "0 auto";
+    list.innerHTML = "";
 
     questionResults.forEach(
         result => {
@@ -1632,21 +1480,12 @@ list.innerHTML = "";
                 color
             ) => {
                 const cell =
-                    document.createElement(
-                        "span"
-                    );
+                    document.createElement("span");
 
-                cell.textContent =
-                    text;
-
-                cell.style.display =
-                    "inline-block";
-
-                cell.style.width =
-                    width;
-
-                cell.style.color =
-                    color;
+                cell.textContent = text;
+                cell.style.display = "inline-block";
+                cell.style.width = width;
+                cell.style.color = color;
 
                 return cell;
             };
@@ -1655,9 +1494,7 @@ list.innerHTML = "";
                 result.subResults.forEach(
                     (subResult, subIndex) => {
                         const row =
-                            document.createElement(
-                                "div"
-                            );
+                            document.createElement("div");
 
                         row.className =
                             "result-item";
@@ -1695,16 +1532,12 @@ list.innerHTML = "";
                             )
                         );
 
-                        list.appendChild(
-                            row
-                        );
+                        list.appendChild(row);
                     }
                 );
             } else {
                 const row =
-                    document.createElement(
-                        "div"
-                    );
+                    document.createElement("div");
 
                 row.className =
                     "result-item";
@@ -1740,9 +1573,7 @@ list.innerHTML = "";
                     )
                 );
 
-                list.appendChild(
-                    row
-                );
+                list.appendChild(row);
             }
         }
     );
@@ -1764,7 +1595,6 @@ document.addEventListener(
                 }
 
                 confirmationMode = true;
-
                 currentQuestionIndex = 0;
 
                 document
@@ -1776,39 +1606,38 @@ document.addEventListener(
                     .classList.remove("hidden");
 
                 showQuestion();
-
                 createQuestionJumpButtons();
 
                 window.scrollTo(0, 0);
             }
         );
 
-document
-    .getElementById("restart-button")
-    .addEventListener(
-        "click",
-        () => {
-            document
-                .getElementById("result-screen")
-                .classList.add("hidden");
+        document
+            .getElementById("restart-button")
+            .addEventListener(
+                "click",
+                () => {
+                    document
+                        .getElementById("result-screen")
+                        .classList.add("hidden");
 
-            document
-                .getElementById("section-screen")
-                .classList.add("hidden");
+                    document
+                        .getElementById("section-screen")
+                        .classList.add("hidden");
 
-            document
-                .getElementById("start-screen")
-                .classList.remove("hidden");
+                    document
+                        .getElementById("start-screen")
+                        .classList.remove("hidden");
 
-            document
-                .getElementById("question-jump-bar")
-                .innerHTML = "";
+                    document
+                        .getElementById("question-jump-bar")
+                        .innerHTML = "";
 
-            document
-                .getElementById("question-number")
-                .textContent = "";
-        }
-    );
+                    document
+                        .getElementById("question-number")
+                        .textContent = "";
+                }
+            );
     }
 );
 
@@ -1838,32 +1667,25 @@ function addMedia(
                 lower.endsWith(".wav") ||
                 lower.endsWith(".ogg")
             ) {
-                        const audio =
-                    document.createElement(
-                        "audio"
-                    );
+                const audio =
+                    document.createElement("audio");
 
-                audio.controls =
-                    true;
-
+                audio.controls = true;
                 audio.controlsList =
                     "nodownload noplaybackrate";
-
                 audio.className =
                     "audio-player";
 
-   audio.src =
-    path.includes("/")
-        ? (
-            path.startsWith("audio/")
-                ? path
-                : `audio/${path.split("/").pop()}`
-        )
-        : `audio/${path}`;
+                audio.src =
+                    path.includes("/")
+                        ? (
+                            path.startsWith("audio/")
+                                ? path
+                                : `audio/${path.split("/").pop()}`
+                        )
+                        : `audio/${path}`;
 
-                container.appendChild(
-                    audio
-                );
+                container.appendChild(audio);
 
                 return;
             }
@@ -1876,9 +1698,7 @@ function addMedia(
                 lower.endsWith(".webp")
             ) {
                 const image =
-                    document.createElement(
-                        "img"
-                    );
+                    document.createElement("img");
 
                 image.src =
                     path.includes("/")
@@ -1890,9 +1710,7 @@ function addMedia(
                         ? "choice-image"
                         : "question-image";
 
-                container.appendChild(
-                    image
-                );
+                container.appendChild(image);
             }
         }
     );
@@ -1905,9 +1723,7 @@ function splitMediaValues(value) {
 
     return String(value)
         .split(/\r?\n/)
-        .map(value =>
-            value.trim()
-        )
+        .map(value => value.trim())
         .filter(Boolean);
 }
 
@@ -1988,15 +1804,15 @@ function createDogAnimation() {
         (1 + totalScore / 3000);
 
     const isFatDog =
-    totalScore > 3000;
+        totalScore > 3000;
 
-const dogPrefix =
-    isFatDog
-        ? "image/dog2_"
-        : "image/dog_";
+    const dogPrefix =
+        isFatDog
+            ? "image/dog2_"
+            : "image/dog_";
 
-dog.src =
-    `${dogPrefix}1.png`;
+    dog.src =
+        `${dogPrefix}1.png`;
 
     dog.style.position = "absolute";
     dog.style.width = `${dogSize}px`;
@@ -2008,11 +1824,11 @@ dog.src =
 
     container.appendChild(dog);
 
-const walkingFrames = [
-    `${dogPrefix}1.png`,
-    `${dogPrefix}2.png`,
-    `${dogPrefix}3.png`
-];
+    const walkingFrames = [
+        `${dogPrefix}1.png`,
+        `${dogPrefix}2.png`,
+        `${dogPrefix}3.png`
+    ];
 
     let frameIndex = 0;
     let direction = 1;
@@ -2033,11 +1849,9 @@ const walkingFrames = [
             time - lastTime;
 
         lastTime = time;
-
         stateTime += delta;
 
         if (sitting) {
-
             if (stateTime >= sitDuration) {
                 sitting = false;
                 stateTime = 0;
@@ -2048,9 +1862,7 @@ const walkingFrames = [
                 dog.src =
                     walkingFrames[frameIndex];
             }
-
         } else {
-
             position +=
                 direction * delta * 0.06;
 
@@ -2078,8 +1890,8 @@ const walkingFrames = [
                 sitDuration =
                     2000 + Math.random() * 3000;
 
-       dog.src =
-    `${dogPrefix}4.png`;
+                dog.src =
+                    `${dogPrefix}4.png`;
             }
 
             frameTime += delta;
@@ -2105,8 +1917,8 @@ const walkingFrames = [
                 : "scaleX(1)";
 
         if (sitting) {
-     dog.src =
-    `${dogPrefix}4.png`;
+            dog.src =
+                `${dogPrefix}4.png`;
         }
 
         requestAnimationFrame(animate);

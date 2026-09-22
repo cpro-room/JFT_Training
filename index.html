@@ -3,104 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>JFT Training</title>
 
-<link rel="stylesheet" href="style.css?v=1000">
+    <link rel="stylesheet" href="style.css?v=1000">
 
-<!-- Google Analytics -->
+    <script>
+        if (new URLSearchParams(location.search).get("exclude_ga") === "1") {
+            localStorage.setItem("exclude_ga", "true");
+        }
 
-<script>
-if (new URLSearchParams(location.search).get("exclude_ga") === "1") {
-    localStorage.setItem("exclude_ga", "true");
-}
+        const excludeGA =
+            localStorage.getItem("exclude_ga") === "true";
 
-const excludeGA =
-    localStorage.getItem("exclude_ga") === "true";
+        if (!excludeGA) {
+            const gaScript =
+                document.createElement("script");
 
-if (!excludeGA) {
+            gaScript.async = true;
+            gaScript.src =
+                "https://www.googletagmanager.com/gtag/js?id=G-DDD1Y5SELD";
 
-    const gaScript =
-        document.createElement("script");
+            document.head.appendChild(gaScript);
 
-    gaScript.async = true;
-    gaScript.src =
-        "https://www.googletagmanager.com/gtag/js?id=G-DDD1Y5SELD";
+            window.dataLayer =
+                window.dataLayer || [];
 
-    document.head.appendChild(gaScript);
+            function gtag() {
+                dataLayer.push(arguments);
+            }
 
-    window.dataLayer =
-        window.dataLayer || [];
+            gtag('js', new Date());
+            gtag('config', 'G-DDD1Y5SELD');
 
-    function gtag() {
-        dataLayer.push(arguments);
-    }
-
-    gtag('js', new Date());
-
-    gtag('config', 'G-DDD1Y5SELD');
-
-} else {
-
-    function gtag() {
-    }
-
-}
-</script>
-
+        } else {
+            function gtag() {
+            }
+        }
+    </script>
 </head>
 
 <body>
 
-<div class="quiz-header">
-    <div id="question-number"></div>
-    <img src="logo.png" class="site-logo" alt="JFT Training">
-</div>
-
-    <!-- =========================
-         スタート画面
-         ========================= -->
-
-<div id="start-screen">
-    <div class="app-title">JFT れんしゅう</div>
-    <div id="course-buttons"></div>
-
-    <div id="dog-animation"></div>
-
-    <div class="copyright">
-        © 2026 C-PRO Co., Ltd.
-    </div>
-</div>
-
-<div id="section-screen" class="hidden">
-    <div class="app-title">JFT れんしゅう</div>
-    <div id="section-buttons"></div>
-    <div class="copyright">
-        © C-PRO Co., Ltd.
-    </div>
-</div>
-
-    <!-- =========================
-         問題画面
-         ========================= -->
-
-<div id="quiz-screen" class="hidden">
-
-    <div id="question-area"></div>
-
-<div id="navigation">
-    <button id="back-button">Back</button>
-    <button id="next-button">Next</button>
-</div>
-
-<div id="question-jump-bar"></div>
-
+    <div class="quiz-header">
+        <div id="question-number"></div>
+        <img src="logo.png" class="site-logo" alt="JFT Training">
     </div>
 
+    <div id="start-screen">
+        <div class="app-title">JFT れんしゅう</div>
+        <div id="course-buttons"></div>
 
-    <!-- =========================
-         結果画面
-         ========================= -->
+        <div id="dog-animation"></div>
+
+        <div class="copyright">
+            © 2026 C-PRO Co., Ltd.
+        </div>
+    </div>
+
+    <div id="section-screen" class="hidden">
+        <div class="app-title">JFT れんしゅう</div>
+        <div id="section-buttons"></div>
+
+        <div class="copyright">
+            © C-PRO Co., Ltd.
+        </div>
+    </div>
+
+    <div id="quiz-screen" class="hidden">
+
+        <div id="question-area"></div>
+
+        <div id="navigation">
+            <button id="back-button">Back</button>
+            <button id="next-button">Next</button>
+        </div>
+
+        <div id="question-jump-bar"></div>
+
+    </div>
 
     <div id="result-screen" class="hidden">
 
@@ -108,23 +88,19 @@ if (!excludeGA) {
 
         <div id="score"></div>
 
-        <div id="correct-count"></div>
-
         <div id="result-list"></div>
 
-  <button id="confirm-button">
-        ពិនិត្យ
-</button>
+        <button id="confirm-button">
+            ពិនិត្យ
+        </button>
 
-<button id="restart-button">
-    Home
-</button>
-
+        <button id="restart-button">
+            Home
+        </button>
 
     </div>
 
-
-<script src="app.js?v=999"></script>
+    <script src="app.js?v=999"></script>
 
 </body>
 </html>
