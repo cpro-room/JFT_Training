@@ -84,6 +84,17 @@ function createCourseButtons() {
     container.innerHTML = "";
 
     displayedCourses.forEach(course => {
+
+        const courseExists =
+            allQuestions.some(
+                question =>
+                    String(question.course || "").trim() === course
+            );
+
+        if (!courseExists) {
+            return;
+        }
+
         const title =
             document.createElement("div");
 
@@ -144,6 +155,121 @@ function createCourseButtons() {
 
             lessonContainer.appendChild(button);
         });
+
+        /* =========================
+           L1~18ボタン
+           ========================= */
+
+        const lesson18Button =
+            document.createElement("button");
+
+        lesson18Button.className = "course-button";
+        lesson18Button.textContent = "L1~18";
+
+        const scores = getBestScores();
+        const targetSections = [];
+
+        allQuestions.forEach(question => {
+
+            const questionCourse =
+                String(question.course || "").trim();
+
+            const questionLesson =
+                String(question.lesson1 || "").trim();
+
+            const sectionName =
+                String(question.sectionName || "").trim();
+
+            if (
+                questionCourse !== course ||
+                !displayedLessons.includes(questionLesson) ||
+                !sectionName
+            ) {
+                return;
+            }
+
+            const exists =
+                targetSections.some(
+                    item =>
+                        item.lesson1 === questionLesson &&
+                        item.sectionName === sectionName
+                );
+
+            if (!exists) {
+                targetSections.push({
+                    lesson1: questionLesson,
+                    sectionName: sectionName
+                });
+            }
+        });
+
+   const unlocked =
+    course === "A1" &&
+    targetSections.length > 0 &&
+    targetSections.every(item => {
+
+                const score =
+                    scores[
+                        getScoreKey(
+                            course,
+                            item.lesson1,
+                            item.sectionName
+                        )
+                    ];
+
+                return Number(score || 0) >= 80;
+            });
+
+lesson18Button.style.background =
+    unlocked ? "#ffff00" : "#d3d3d3";
+
+        lesson18Button.style.cursor =
+            unlocked ? "pointer" : "default";
+
+        lesson18Button.disabled = !unlocked;
+
+ if (unlocked) {
+    lesson18Button.addEventListener(
+        "click",
+        () => {
+            document.getElementById(
+                "lesson-test-info"
+            ).innerHTML =
+                `${course}&nbsp;&nbsp;L1~18`;
+
+           const lessonTestButton =
+    document.getElementById(
+        "lesson-test-button"
+    );
+
+lessonTestButton.dataset.course = course;
+lessonTestButton.className = "course-button";
+lessonTestButton.style.backgroundColor = "#ffff00";
+lessonTestButton.style.cursor = "pointer";
+lessonTestButton.disabled = false;
+lessonTestButton.style.display = "block";
+lessonTestButton.style.margin = "0 auto";
+
+document.getElementById(
+    "start-screen"
+).classList.add("hidden");
+
+            document.getElementById(
+                "section-screen"
+            ).classList.add("hidden");
+
+            document.getElementById(
+                "lesson-test-screen"
+            ).classList.remove("hidden");
+
+            window.scrollTo(0, 0);
+        }
+    );
+}
+
+        lessonContainer.appendChild(
+            lesson18Button
+        );
 
         container.appendChild(lessonContainer);
     });
@@ -284,6 +410,392 @@ container.appendChild(
 
     startScreen.classList.add("hidden");
     sectionScreen.classList.remove("hidden");
+
+    window.scrollTo(0, 0);
+}
+
+document.getElementById(
+    "lesson-test-button"
+).addEventListener(
+    "click",
+    () => {
+        const course =
+            document.getElementById(
+                "lesson-test-button"
+            ).dataset.course;
+        startLessonTest(course);
+    }
+);
+
+function startLessonTest(course) {
+
+    selectedCourse = course;
+    selectedLesson = "L1~18";
+    selectedSection = "Section1";
+
+    confirmationMode = false;
+
+    const type1 =
+        "Look at the illustration and choose the correct word.";
+
+    const type2 =
+        "Read the sentence and choose the word that fits in (      ) the most.";
+
+    const type3 =
+        "How do you write the underlined kanji word in hiragana? Choose the correct one.";
+
+    const type4 =
+        "Read the sentence and choose the kanji word that fits in (    ) the most?";
+
+    function selectThreeBalanced(questions) {
+
+        const groups = displayedLessons.map(
+            lesson1 =>
+                questions.filter(
+                    question =>
+                        String(question.lesson1 || "").trim() === lesson1
+                )
+        );
+
+        const selected = [];
+
+        groups.forEach(group => {
+            if (group.length > 0) {
+                const shuffled = [...group];
+                shuffleArray(shuffled);
+                selected.push(shuffled[0]);
+            }
+        });
+
+        if (selected.length < 3) {
+
+            const remaining =
+                questions.filter(
+                    question =>
+                        !selected.includes(question)
+                );
+
+            shuffleArray(remaining);
+
+            selected.push(
+                ...remaining.slice(
+                    0,
+                    3 - selected.length
+                )
+            );
+        }
+
+        shuffleArray(selected);
+
+        return selected.slice(0, 3);
+    }
+
+const selectBalancedQuestions = (
+    questions,
+    count
+) => {
+
+    const groups =
+        displayedLessons.map(
+            lesson1 =>
+                questions.filter(
+                    question =>
+                        String(question.lesson1 || "").trim() === lesson1
+                )
+        );
+
+    const selected = [];
+
+    const baseCount =
+        Math.floor(count / groups.length);
+
+    const remainder =
+        count % groups.length;
+
+    groups.forEach((group, index) => {
+
+        const target =
+            baseCount +
+            (index < remainder ? 1 : 0);
+
+        const shuffled = [...group];
+
+        shuffleArray(shuffled);
+
+        selected.push(
+            ...shuffled.slice(0, target)
+        );
+    });
+
+    return selected;
+};
+
+const section2Questions =
+    allQuestions.filter(
+        question =>
+            String(question.course || "").trim() === course &&
+            String(question.section || "").trim() === "Section2"
+    );
+
+const selectedSection2Questions =
+    selectBalancedQuestions(
+        section2Questions,
+        12
+    );
+
+const section3Questions =
+    allQuestions.filter(
+        question =>
+            String(question.course || "").trim() === course &&
+            String(question.section || "").trim() === "Section3"
+    );
+
+const section3Units = [];
+
+section3Questions.forEach(question => {
+
+const subQuestions =
+    parseSubQuestions(question.khmerQuestion);
+
+    const count =
+        subQuestions.length > 0
+            ? subQuestions.length
+            : 1;
+
+    section3Units.push({
+        question: question,
+        count: count
+    });
+});
+
+const selectSection3Balanced = (units, targetCount) => {
+
+    const groups =
+        displayedLessons.map(
+            lesson1 =>
+                units.filter(
+                    unit =>
+                        String(
+                            unit.question.lesson1 || ""
+                        ).trim() === lesson1
+                )
+        );
+
+    const selected = [];
+    let totalCount = 0;
+
+    const targetPerGroup =
+        Math.floor(targetCount / groups.length);
+
+    groups.forEach(group => {
+
+        const shuffled = [...group];
+
+        shuffleArray(shuffled);
+
+        let groupCount = 0;
+
+        for (const unit of shuffled) {
+
+            if (
+                groupCount + unit.count <=
+                targetPerGroup
+            ) {
+                selected.push(unit.question);
+                groupCount += unit.count;
+                totalCount += unit.count;
+            }
+        }
+    });
+
+    const remaining =
+        units.filter(
+            unit =>
+                !selected.includes(unit.question)
+        );
+
+    shuffleArray(remaining);
+
+    for (const unit of remaining) {
+
+        if (totalCount >= targetCount) {
+            break;
+        }
+
+        selected.push(unit.question);
+        totalCount += unit.count;
+    }
+
+    return selected;
+};
+
+const selectedSection3Questions =
+    selectSection3Balanced(
+        section3Units,
+        12
+    );
+
+const section4Questions =
+    allQuestions.filter(
+        question =>
+            String(question.course || "").trim() === course &&
+            String(question.section || "").trim() === "Section4"
+    );
+
+const section4Units = [];
+
+section4Questions.forEach(question => {
+
+    const subQuestions =
+        parseSubQuestions(question.question);
+
+    const count =
+        subQuestions.length > 0
+            ? subQuestions.length
+            : 1;
+
+    section4Units.push({
+        question: question,
+        count: count
+    });
+});
+
+const selectSection4Balanced = (units, targetCount) => {
+
+    const groups =
+        displayedLessons.map(
+            lesson1 =>
+                units.filter(
+                    unit =>
+                        String(
+                            unit.question.lesson1 || ""
+                        ).trim() === lesson1
+                )
+        );
+
+    const selected = [];
+    let totalCount = 0;
+
+    const targetPerGroup =
+        Math.floor(targetCount / groups.length);
+
+    groups.forEach(group => {
+
+        const shuffled = [...group];
+
+        shuffleArray(shuffled);
+
+        let groupCount = 0;
+
+        for (const unit of shuffled) {
+
+            if (
+                groupCount + unit.count <=
+                targetPerGroup
+            ) {
+                selected.push(unit.question);
+                groupCount += unit.count;
+                totalCount += unit.count;
+            }
+        }
+    });
+
+    const remaining =
+        units.filter(
+            unit =>
+                !selected.includes(unit.question)
+        );
+
+    shuffleArray(remaining);
+
+    for (const unit of remaining) {
+
+        if (totalCount >= targetCount) {
+            break;
+        }
+
+        selected.push(unit.question);
+        totalCount += unit.count;
+    }
+
+    return selected;
+};
+
+const selectedSection4Questions =
+    selectSection4Balanced(
+        section4Units,
+        12
+    );
+
+    const section1Questions =
+        allQuestions.filter(
+            question =>
+                String(question.course || "").trim() === course &&
+                String(question.section || "").trim() === "Section1"
+        );
+
+    const questions1 =
+        section1Questions.filter(
+            question =>
+                String(question.englishQuestion || "").trim() === type1
+        );
+
+    const questions2 =
+        section1Questions.filter(
+            question =>
+                String(question.englishQuestion || "").trim() === type2 &&
+                String(question.sectionName || "").trim() === "ことば"
+        );
+
+    const questions3 =
+        section1Questions.filter(
+            question =>
+                String(question.englishQuestion || "").trim() === type3
+        );
+
+const questions4 =
+    section1Questions.filter(
+        question =>
+            String(question.englishQuestion || "").trim() === type4 &&
+            String(question.sectionName || "").trim() === "かんじ"
+    );
+
+currentQuestions = [
+    ...selectThreeBalanced(questions1),
+    ...selectThreeBalanced(questions2),
+    ...selectThreeBalanced(questions3),
+    ...selectThreeBalanced(questions4),
+    ...selectedSection2Questions,
+    ...selectedSection3Questions,
+    ...selectedSection4Questions
+];
+
+    currentQuestionIndex = 0;
+
+    displayedChoiceSets =
+        new Array(currentQuestions.length).fill(null);
+
+    userAnswers =
+        new Array(currentQuestions.length).fill(null);
+
+    questionResults = [];
+
+    document
+        .getElementById("lesson-test-screen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("quiz-screen")
+        .classList.remove("hidden");
+
+    const quizScreen =
+        document.getElementById("quiz-screen");
+
+    quizScreen.className = "course-screen";
+    quizScreen.dataset.course = course;
+
+    showQuestion();
+    createQuestionJumpButtons();
 
     window.scrollTo(0, 0);
 }
@@ -1459,8 +1971,10 @@ function showResultScreen(
     resultInfo.className =
         "result-info";
 
-    resultInfo.innerHTML =
-        `${selectedCourse}&nbsp;&nbsp;${selectedLesson}&nbsp;&nbsp;${selectedSection}`;
+resultInfo.innerHTML =
+    selectedLesson === "L1~18"
+        ? `${selectedCourse}&nbsp;&nbsp;${selectedLesson}`
+        : `${selectedCourse}&nbsp;&nbsp;${selectedLesson}&nbsp;&nbsp;${selectedSection}`;
 
     resultTitle.insertAdjacentElement(
         "afterend",
