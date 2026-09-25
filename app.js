@@ -156,10 +156,23 @@ function showSectionButtons(course, lesson1) {
     const sectionScreen =
         document.getElementById("section-screen");
 
-    const container =
-        document.getElementById("section-buttons");
+const container =
+    document.getElementById("section-buttons");
 
-    container.innerHTML = "";
+container.innerHTML = "";
+
+const sectionInfo =
+    document.createElement("div");
+
+sectionInfo.className =
+    "result-info";
+
+sectionInfo.innerHTML =
+    `${course}&nbsp;&nbsp;${lesson1}`;
+
+container.appendChild(
+    sectionInfo
+);
 
     const sections = [];
 
