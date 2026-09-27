@@ -58,6 +58,148 @@ function saveBestScore(course, lesson1, sectionName, percentage) {
     }
 }
 
+function saveLessonTestScore(course, percentage) {
+    const key =
+        `jft_lesson_test_scores_${course}`;
+
+    let scores = [];
+
+    try {
+        scores = JSON.parse(
+            localStorage.getItem(key) || "[]"
+        );
+    } catch (error) {
+        scores = [];
+    }
+
+    scores.push(Number(percentage));
+
+    localStorage.setItem(
+        key,
+        JSON.stringify(scores)
+    );
+}
+
+function updateLessonTestRanking(course) {
+    const button =
+        document.getElementById(
+            "lesson-test-button"
+        );
+
+    if (!button) {
+        return;
+    }
+
+    let scores = [];
+
+    try {
+        scores = JSON.parse(
+            localStorage.getItem(
+                `jft_lesson_test_scores_${course}`
+            ) || "[]"
+        );
+    } catch (error) {
+        scores = [];
+    }
+
+    scores =
+        scores
+            .map(score => Number(score))
+            .filter(score => !isNaN(score))
+            .sort((a, b) => b - a);
+
+    let ranking =
+        document.getElementById(
+            "lesson-test-ranking"
+        );
+
+    if (!ranking) {
+        ranking =
+            document.createElement("div");
+
+        ranking.id =
+            "lesson-test-ranking";
+
+ranking.style.width = "260px";
+ranking.style.margin = "20px auto 0";
+ranking.style.paddingLeft = "55px";
+
+        button.insertAdjacentElement(
+            "afterend",
+            ranking
+        );
+    }
+
+    const medals = [
+        "🥇",
+        "🥈",
+        "🥉"
+    ];
+
+    ranking.innerHTML = "";
+
+    medals.forEach(
+        (medal, index) => {
+            const row =
+                document.createElement("div");
+
+            row.style.display = "flex";
+            row.style.alignItems = "center";
+            row.style.height = "70px";
+            row.style.fontSize = "20px";
+
+            const medalText =
+                document.createElement("span");
+
+            medalText.textContent = medal;
+            medalText.style.width = "70px";
+            medalText.style.fontSize = "40px";
+
+            const scoreText =
+                document.createElement("span");
+
+            scoreText.textContent =
+                scores[index] !== undefined
+                    ? `${scores[index]}%`
+                    : "－";
+
+            row.appendChild(medalText);
+            row.appendChild(scoreText);
+
+            ranking.appendChild(row);
+        }
+    );
+const backButton =
+    document.createElement("button");
+
+backButton.className = "section-back-button";
+backButton.textContent = "Back";
+
+ranking.style.position = "relative";
+
+backButton.style.position = "absolute";
+backButton.style.left = "50%";
+backButton.style.top = "280px";
+backButton.style.transform = "translateX(-50%)";
+
+backButton.addEventListener(
+    "click",
+    () => {
+        document
+            .getElementById("lesson-test-screen")
+            .classList.add("hidden");
+
+        document
+            .getElementById("start-screen")
+            .classList.remove("hidden");
+
+        window.scrollTo(0, 0);
+    }
+);
+
+ranking.appendChild(backButton);
+}
+
 async function loadQuestions() {
     try {
         const response = await fetch("questions.json");
@@ -249,6 +391,8 @@ lessonTestButton.style.cursor = "pointer";
 lessonTestButton.disabled = false;
 lessonTestButton.style.display = "block";
 lessonTestButton.style.margin = "0 auto";
+
+updateLessonTestRanking(course);
 
 document.getElementById(
     "start-screen"
@@ -1306,28 +1450,55 @@ function createChoiceGroups(
         const choices = [];
 
         (question.choices || []).forEach(choice => {
-            const textParts =
-                String(choice.text || "")
-                    .split(/<br\s*\/?>/i)
-                    .map(value => value.trim());
-
             const imageParts =
                 splitMediaValues(choice.image);
 
             const audioParts =
                 splitMediaValues(choice.audio);
 
-            let text =
-                textParts[i] || "";
+            let text = "";
+            let image = "";
 
-            let image =
-                imageParts[i] || "";
-
+            /*
+             * S4の「文字選択肢＋画像選択肢」の形式
+             *
+             * 1行目 → (1) の文字
+             * 2行目 → (2) の画像
+             */
             if (
-                /\.(png|jpg|jpeg|gif|webp)$/i.test(text)
+                question.section === "Section4" &&
+                imageParts.length >= 2
             ) {
-                image = text;
-                text = "";
+                if (i === 0) {
+                    text =
+                        imageParts[0]
+                            .replace(/^image\//i, "")
+                            .trim();
+                } else if (i === 1) {
+                    image =
+                        imageParts[1];
+                }
+            } else {
+                /*
+                 * それ以外は従来どおり
+                 */
+                const textParts =
+                    String(choice.text || "")
+                        .split(/<br\s*\/?>/i)
+                        .map(value => value.trim());
+
+                text =
+                    textParts[i] || "";
+
+                image =
+                    imageParts[i] || "";
+
+                if (
+                    /\.(png|jpg|jpeg|gif|webp)$/i.test(text)
+                ) {
+                    image = text;
+                    text = "";
+                }
             }
 
             choices.push({
@@ -1917,18 +2088,25 @@ function calculateResult() {
                 100
             );
 
-    saveBestScore(
-        selectedCourse,
-        selectedLesson,
-        selectedSection,
-        percentage
-    );
+saveBestScore(
+    selectedCourse,
+    selectedLesson,
+    selectedSection,
+    percentage
+);
 
-    showResultScreen(
-        correctAnswers,
-        totalAnswers,
+if (selectedLesson === "L1~18") {
+    saveLessonTestScore(
+        selectedCourse,
         percentage
     );
+}
+
+showResultScreen(
+    correctAnswers,
+    totalAnswers,
+    percentage
+);
 }
 
 function showResultScreen(
