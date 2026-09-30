@@ -1555,9 +1555,12 @@ function showChoices(
     const question =
         currentQuestions[questionIndex];
 
-    const isSection4 =
-        question &&
-        question.section === "Section4";
+ const isLargeImageChoice =
+    question &&
+    (
+        question.section === "Section3" ||
+        question.section === "Section4"
+    );
 
     choices.forEach(
         choice => {
@@ -1567,10 +1570,10 @@ function showChoices(
             button.className =
                 "choice-button";
 
-            if (
-                isSection4 &&
-                choice.image
-            ) {
+if (
+    isLargeImageChoice &&
+    choice.image
+) {
                 button.classList.add(
                     "choice-with-image"
                 );

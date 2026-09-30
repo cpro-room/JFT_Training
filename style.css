@@ -460,22 +460,24 @@ button {
 
 /* Section4 選択肢 */
 
-#quiz-screen[data-section="Section4"] .choice-button,
-#quiz-screen[data-course="Section4"] .choice-button {
+/* Section3・Section4 選択肢 */
+
+#quiz-screen[data-section="Section3"] .choice-button,
+#quiz-screen[data-section="Section4"] .choice-button {
     height: auto;
     min-height: 45px;
 }
 
-#quiz-screen[data-section="Section4"] .choice-button:has(.choice-image),
-#quiz-screen[data-course="Section4"] .choice-button:has(.choice-image) {
+#quiz-screen[data-section="Section3"] .choice-button:has(.choice-image),
+#quiz-screen[data-section="Section4"] .choice-button:has(.choice-image) {
     min-height: 160px;
 
     justify-content: center;
     text-align: center;
 }
 
-#quiz-screen[data-section="Section4"] .choice-content:has(.choice-image),
-#quiz-screen[data-course="Section4"] .choice-content:has(.choice-image) {
+#quiz-screen[data-section="Section3"] .choice-content:has(.choice-image),
+#quiz-screen[data-section="Section4"] .choice-content:has(.choice-image) {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -486,8 +488,8 @@ button {
     gap: 8px;
 }
 
-#quiz-screen[data-section="Section4"] .choice-image,
-#quiz-screen[data-course="Section4"] .choice-image {
+#quiz-screen[data-section="Section3"] .choice-image,
+#quiz-screen[data-section="Section4"] .choice-image {
     display: block;
 
     width: auto;
