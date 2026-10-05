@@ -1,9 +1,0 @@
-pdfのクメール語の文字化け対策
-
-1．文字起こししたいクメール語をキャプチャして「a.png」とおいう名前でデスクトップの保存する。
-
-2．Tesseractを実行する
-つまりcmdを起動し、以下のプロンプトを実行する。
-"C:\Program Files\Tesseract-OCR\tesseract.exe" "%USERPROFILE%\Desktop\test.png" "%USERPROFILE%\Desktop\ocr_test" -l khm --psm 6
-
-3．デスクトップにtxtファイルが生成される。
