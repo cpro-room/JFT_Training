@@ -1,0 +1,10 @@
+CMDでファイアウォールのオン/オフ
+
+オフ
+netsh advfirewall set allprofiles state off
+
+オン
+netsh advfirewall set allprofiles state on
+
+確認
+netsh advfirewall show allprofiles state

@@ -1,0 +1,714 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 20px 20px 70px;
+    font-family: Arial, "Noto Sans JP", sans-serif;
+    background: #ffffff;
+    color: #222;
+}
+
+.hidden {
+    display: none !important;
+}
+
+button {
+    font-size: 18px;
+    padding: 10px 20px;
+    margin: 5px;
+}
+
+#back-button,
+#next-button {
+    background: #4caf50;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.section-back-button {
+    background: #4caf50;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+#next-button.finish-button {
+    background: #d32f2f;
+    color: #ffffff;
+}
+
+
+/* スタート画面 */
+
+#start-screen {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.app-logo {
+    text-align: center;
+}
+
+.app-logo img {
+    width: 20mm;
+    height: 20mm;
+    object-fit: contain;
+}
+
+.app-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    margin: 12px 0 20px;
+}
+
+#course-buttons {
+    display: block;
+    width: 100%;
+    margin-top: -20px;
+}
+
+#course-buttons > div {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+}
+
+#course-buttons > div:nth-of-type(1) {
+    padding-top: 32px;
+}
+
+#course-buttons > div:not(:last-child) {
+    margin-bottom: 20px;
+}
+
+#course-buttons > div:nth-of-type(2),
+#course-buttons > div:nth-of-type(4) {
+    margin-bottom: 45px;
+}
+
+#course-buttons > div:nth-of-type(5),
+#course-buttons > div:nth-of-type(6) {
+    display: none;
+}
+
+.course-button {
+    min-width: 120px;
+    height: 52px;
+    box-sizing: border-box;
+    padding: 10px;
+
+    background: #f9d9df;
+    border: none;
+    border-radius: 12px;
+
+    font-size: 21px;
+    cursor: pointer;
+
+    box-shadow:
+        4px 5px 0 rgba(0, 0, 0, 0.12),
+        7px 9px 12px rgba(0, 0, 0, 0.10);
+
+    position: relative;
+    overflow: hidden;
+
+    transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease;
+}
+
+.course-button:active {
+    transform: translate(3px, 4px);
+
+    box-shadow:
+        1px 2px 0 rgba(0, 0, 0, 0.12),
+        2px 4px 6px rgba(0, 0, 0, 0.10);
+}
+
+.course-kotoba {
+    background: #f8d7da;
+    border-color: #e8b8bd;
+}
+
+.course-kanji {
+    background: #d9edf7;
+    border-color: #b8d8e8;
+}
+
+.course-kaiwa {
+    background: #d9ead3;
+    border-color: #b7d6ae;
+}
+
+.course-choukai {
+    background: #fff2cc;
+    border-color: #e6d38a;
+}
+
+.course-dokkai {
+    background: #e4d9f5;
+    border-color: #c9b5df;
+}
+
+#course-buttons > div:nth-of-type(3) + div .course-button {
+    background: #f8d2bd;
+}
+
+#course-buttons > div:nth-of-type(5) + div .course-button {
+    background: #fff2cc;
+}
+
+#dog-animation {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+}
+
+.copyright {
+    text-align: center;
+    font-size: 13px;
+    color: #888;
+    margin-top: 35px;
+    padding-bottom: 15px;
+}
+
+
+/* セクション画面 */
+
+#section-screen {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#section-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 42px;
+}
+
+#section-buttons .course-button {
+    width: 240px;
+}
+
+.section-kotoba {
+    background: #e2f0d9;
+    border-color: #c6dfb8;
+}
+
+.section-kanji {
+    background: #d9eaf7;
+    border-color: #b8d4e8;
+}
+
+.section-kaiwa {
+    background: #eadcf8;
+    border-color: #d1bde5;
+}
+
+.section-choukai {
+    background: #fce4ec;
+    border-color: #e8c5d0;
+}
+
+.section-dokkai {
+    background: #dff3f0;
+    border-color: #b9ddd8;
+}
+
+
+/* 問題画面 */
+
+.quiz-header {
+    width: 100%;
+    height: 76px;
+    position: relative;
+}
+
+.site-logo {
+    position: absolute !important;
+    width: 20mm;
+    height: auto !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+#question-number {
+    position: absolute !important;
+    left: 10px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+
+    margin: 0 !important;
+
+    font-size: 32px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+#quiz-screen {
+    width: calc(100% - 60px) !important;
+    max-width: 900px !important;
+    margin-left: 60px !important;
+    margin-right: auto !important;
+}
+
+#quiz-screen[data-section="Section1"] .question-content,
+#quiz-screen[data-section="Section2"] .question-content {
+    width: 100%;
+    height: 196px;
+    min-height: 196px;
+    overflow: hidden;
+}
+
+#quiz-screen[data-section="Section1"] .question-text,
+#quiz-screen[data-section="Section2"] .question-text {
+    width: 100%;
+    height: 48px;
+    min-height: 48px;
+
+    padding: 5px 15px;
+    margin-bottom: 5px;
+
+    color: #111;
+    font-size: 18px;
+    line-height: 1.8;
+
+    white-space: normal;
+    overflow: visible;
+    flex-shrink: 0;
+}
+
+#quiz-screen[data-section="Section1"] .khmer-question-text,
+#quiz-screen[data-section="Section2"] .khmer-question-text {
+    display: none !important;
+}
+
+#quiz-screen[data-section="Section1"] .question-image,
+#quiz-screen[data-section="Section2"] .question-image {
+    display: block;
+
+    width: auto;
+    height: auto;
+
+    max-width: 420px;
+    max-height: 180px;
+
+    margin: 5px 0 15px 65px;
+
+    object-fit: contain;
+}
+
+#quiz-screen[data-section="Section1"] .audio-player,
+#quiz-screen[data-section="Section2"] .audio-player {
+    display: block;
+
+    max-width: 100%;
+
+    margin: 5px 0 15px 65px;
+}
+
+#quiz-screen[data-section="Section3"] .question-text {
+    font-size: 18px;
+}
+
+#quiz-screen[data-section="Section4"] .question-content {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+}
+
+#quiz-screen[data-section="Section4"] .question-text {
+    width: 100%;
+
+    padding: 5px 15px;
+    margin-bottom: 5px;
+
+    color: #111;
+    font-size: 18px;
+    line-height: 1.8;
+
+    white-space: normal;
+}
+
+#quiz-screen[data-section="Section4"] .question-image {
+    display: block;
+
+    width: auto;
+    height: auto;
+
+    max-width: 100%;
+    max-height: none;
+
+    margin: 5px auto 15px auto;
+
+    object-fit: contain;
+}
+
+
+/* 小問 */
+
+.subquestion {
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+.subquestion-text {
+    font-size: 18px;
+    margin-bottom: 10px;
+
+    padding-left: 1.5em;
+    text-indent: -1.5em;
+}
+
+
+/* 選択肢 */
+
+.choice-list {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    max-width: 700px;
+
+    margin: 0 auto;
+
+    gap: 16px;
+}
+
+.choice-button {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    height: 45px;
+    min-height: 45px;
+
+    padding: 8px;
+
+    border: 1px solid #000;
+    border-radius: 4px;
+
+    background: #fff;
+    color: #111;
+
+    text-align: left;
+    font-size: 18px;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.1s,
+        border-color 0.1s;
+}
+
+.choice-button:hover,
+.choice-button.selected {
+    padding: 7px;
+    border: 2px solid #f79d52;
+    background: #fdeada;
+}
+
+.choice-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    width: 100%;
+    min-width: 0;
+}
+
+.choice-text {
+    display: block;
+
+    min-width: 0;
+
+    white-space: nowrap;
+
+    flex: 1 1 auto;
+}
+
+.choice-image {
+    display: block;
+
+    width: auto;
+    height: auto;
+
+    max-width: 120px;
+    max-height: 120px;
+
+    margin: 0 auto;
+
+    object-fit: contain;
+}
+
+#quiz-screen .choice-button:not(.choice-with-image) {
+    height: 45px !important;
+    min-height: 45px !important;
+}
+
+
+/* Section4 選択肢 */
+
+/* Section3・Section4 選択肢 */
+
+#quiz-screen[data-section="Section3"] .choice-button,
+#quiz-screen[data-section="Section4"] .choice-button {
+    height: auto;
+    min-height: 45px;
+}
+
+#quiz-screen[data-section="Section3"] .choice-button:has(.choice-image),
+#quiz-screen[data-section="Section4"] .choice-button:has(.choice-image) {
+    min-height: 160px;
+
+    justify-content: center;
+    text-align: center;
+}
+
+#quiz-screen[data-section="Section3"] .choice-content:has(.choice-image),
+#quiz-screen[data-section="Section4"] .choice-content:has(.choice-image) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+
+    gap: 8px;
+}
+
+#quiz-screen[data-section="Section3"] .choice-image,
+#quiz-screen[data-section="Section4"] .choice-image {
+    display: block;
+
+    width: auto;
+    height: auto;
+
+    max-width: 100%;
+    max-height: 140px;
+
+    margin: 0 auto;
+
+    object-fit: contain;
+}
+
+/* ルビ */
+
+ruby {
+    ruby-position: over;
+}
+
+rt {
+    font-size: 0.5em;
+    line-height: 1;
+    font-weight: normal;
+}
+
+
+/* ナビゲーション */
+
+#navigation {
+    margin-top: 30px;
+    text-align: right;
+}
+
+
+/* 問題番号ジャンプバー */
+
+#question-jump-bar {
+    position: absolute !important;
+    left: 0 !important;
+    top: 86px !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+
+    width: 50px !important;
+    height: auto !important;
+
+    overflow: visible !important;
+
+    gap: 4px !important;
+    padding: 4px !important;
+
+    z-index: 1000 !important;
+}
+
+#question-jump-bar button {
+    display: block !important;
+
+    width: 38px !important;
+    min-width: 38px !important;
+    height: 34px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    flex: none !important;
+}
+
+.question-jump-button {
+    width: 40px;
+    height: 36px;
+
+    margin: 0;
+    padding: 0;
+
+    font-size: 16px;
+
+    border: 1px solid #777;
+    border-radius: 4px;
+
+    background: #4caf50;
+    color: #ffffff;
+
+    cursor: pointer;
+}
+
+.question-jump-button.answered {
+    background: #555555;
+    color: #ffffff;
+}
+
+.question-jump-button.current {
+    background: #4caf50;
+    border: 3px solid #f79d52;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+
+/* 確認画面 */
+
+#confirm-screen {
+    max-width: 600px;
+    margin: 80px auto;
+    text-align: center;
+}
+
+
+/* 結果画面 */
+
+#result-screen {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#result-screen h1 {
+    display: inline-block;
+
+    margin: 1em auto 1em auto;
+    padding: 10px 30px;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 25%,
+            #fffbe3 0%,
+            #faedb8 25%,
+            #e6ce78 55%,
+            #c5a84a 100%
+        );
+
+    border: 2px solid #b08a28;
+    border-radius: 4px;
+
+    box-shadow:
+        inset 0 2px 3px rgba(255, 255, 255, 0.9),
+        inset 0 -3px 5px rgba(120, 90, 20, 0.25);
+}
+
+#score {
+    font-size: 40px;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+#correct-count {
+    font-size: 22px;
+    margin-bottom: 30px;
+}
+
+.result-item {
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+}
+
+.result-correct {
+    color: #006600;
+}
+
+.result-wrong {
+    color: #cc0000;
+}
+
+.result-info {
+    width: fit-content;
+    margin: 0 auto 1em auto;
+    font-size: 26px;
+    text-decoration: underline;
+}
+
+#confirm-button,
+#restart-button {
+    width: 120px;
+    height: 45px;
+
+    padding: 10px 20px;
+    margin: 5px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+
+    border: 1px solid #999;
+    border-radius: 6px;
+
+    background: #f5f5f5;
+    color: #222;
+
+    cursor: pointer;
+}
+
+
+/* スマートフォン */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 10px;
+    }
+
+    .choice-button {
+        padding: 8px;
+    }
+
+    .question-text,
+    .subquestion-text {
+        font-size: 18px;
+    }
+
+    #course-buttons > div {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+    }
+
+    #course-buttons > div .course-button {
+        min-width: 0;
+        flex: 1;
+    }
+}

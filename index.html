@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JFT Training</title>
+
+    <link rel="stylesheet" href="style.css?v=1000">
+
+    <script>
+        if (new URLSearchParams(location.search).get("exclude_ga") === "1") {
+            localStorage.setItem("exclude_ga", "true");
+        }
+
+        const excludeGA =
+            localStorage.getItem("exclude_ga") === "true";
+
+        if (!excludeGA) {
+            const gaScript =
+                document.createElement("script");
+
+            gaScript.async = true;
+            gaScript.src =
+                "https://www.googletagmanager.com/gtag/js?id=G-DDD1Y5SELD";
+
+            document.head.appendChild(gaScript);
+
+            window.dataLayer =
+                window.dataLayer || [];
+
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+
+            gtag('js', new Date());
+            gtag('config', 'G-DDD1Y5SELD');
+
+        } else {
+            function gtag() {
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <div class="quiz-header">
+        <div id="question-number"></div>
+        <img src="logo.png" class="site-logo" alt="JFT Training">
+    </div>
+
+    <div id="start-screen">
+        <div class="app-title">JFT れんしゅう</div>
+        <div id="course-buttons"></div>
+
+        <div id="dog-animation"></div>
+
+        <div class="copyright">
+            © 2026 C-PRO Co., Ltd.
+        </div>
+    </div>
+
+     <div id="section-screen" class="hidden">
+        <div class="app-title">JFT れんしゅう</div>
+        <div id="section-buttons"></div>
+
+        <div class="copyright">
+            © C-PRO Co., Ltd.
+        </div>
+    </div>
+
+    <div id="lesson-test-screen" class="hidden">
+        <div class="app-title">JFT れんしゅう</div>
+
+        <div id="lesson-test-info" class="result-info"></div>
+
+        <button id="lesson-test-button">
+            テスト
+        </button>
+    </div>
+
+    <div id="quiz-screen" class="hidden">
+
+        <div id="question-area"></div>
+
+        <div id="navigation">
+            <button id="back-button">Back</button>
+            <button id="next-button">Next</button>
+        </div>
+
+        <div id="question-jump-bar"></div>
+
+    </div>
+
+    <div id="result-screen" class="hidden">
+
+        <h1><ruby>結果<rt>けっか</rt></ruby>　លទ្ធផល</h1>
+
+        <div id="score"></div>
+
+        <div id="result-list"></div>
+
+        <button id="confirm-button">
+            ពិនិត្យ
+        </button>
+
+        <button id="restart-button">
+            Home
+        </button>
+
+    </div>
+
+    <script src="app.js?v=999"></script>
+
+</body>
+</html>
