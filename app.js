@@ -2100,6 +2100,8 @@ saveBestScore(
     percentage
 );
 
+createCourseButtons();
+
 if (selectedLesson === "L1~18") {
     saveLessonTestScore(
         selectedCourse,
