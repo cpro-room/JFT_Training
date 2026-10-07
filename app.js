@@ -120,9 +120,9 @@ function updateLessonTestRanking(course) {
         ranking.id =
             "lesson-test-ranking";
 
-ranking.style.width = "260px";
-ranking.style.margin = "20px auto 0";
-ranking.style.paddingLeft = "55px";
+        ranking.style.width = "260px";
+        ranking.style.margin = "20px auto 0";
+        ranking.style.paddingLeft = "55px";
 
         button.insertAdjacentElement(
             "afterend",
@@ -169,35 +169,36 @@ ranking.style.paddingLeft = "55px";
             ranking.appendChild(row);
         }
     );
-const backButton =
-    document.createElement("button");
 
-backButton.className = "section-back-button";
-backButton.textContent = "Back";
+    const backButton =
+        document.createElement("button");
 
-ranking.style.position = "relative";
+    backButton.className = "section-back-button";
+    backButton.textContent = "Back";
 
-backButton.style.position = "absolute";
-backButton.style.left = "50%";
-backButton.style.top = "280px";
-backButton.style.transform = "translateX(-50%)";
+    ranking.style.position = "relative";
 
-backButton.addEventListener(
-    "click",
-    () => {
-        document
-            .getElementById("lesson-test-screen")
-            .classList.add("hidden");
+    backButton.style.position = "absolute";
+    backButton.style.left = "50%";
+    backButton.style.top = "280px";
+    backButton.style.transform = "translateX(-50%)";
 
-        document
-            .getElementById("start-screen")
-            .classList.remove("hidden");
+    backButton.addEventListener(
+        "click",
+        () => {
+            document
+                .getElementById("lesson-test-screen")
+                .classList.add("hidden");
 
-        window.scrollTo(0, 0);
-    }
-);
+            document
+                .getElementById("start-screen")
+                .classList.remove("hidden");
 
-ranking.appendChild(backButton);
+            window.scrollTo(0, 0);
+        }
+    );
+
+    ranking.appendChild(backButton);
 }
 
 async function loadQuestions() {
@@ -345,10 +346,10 @@ function createCourseButtons() {
             }
         });
 
-const unlocked =
-    (course === "A1" || course === "A2.1") &&
-    targetSections.length > 0 &&
-    targetSections.every(item => {
+        const unlocked =
+            (course === "A1" || course === "A2.1") &&
+            targetSections.length > 0 &&
+            targetSections.every(item => {
 
                 const score =
                     scores[
@@ -362,54 +363,58 @@ const unlocked =
                 return Number(score || 0) >= 80;
             });
 
-lesson18Button.style.background =
-    unlocked ? "#ffff00" : "#d3d3d3";
+        lesson18Button.style.background =
+            unlocked ? "#ffff00" : "#d3d3d3";
 
         lesson18Button.style.cursor =
             unlocked ? "pointer" : "default";
 
         lesson18Button.disabled = !unlocked;
 
- if (unlocked) {
-    lesson18Button.addEventListener(
-        "click",
-        () => {
-            document.getElementById(
-                "lesson-test-info"
-            ).innerHTML =
-                `${course}&nbsp;&nbsp;L1~18`;
+        if (unlocked) {
+            lesson18Button.addEventListener(
+                "click",
+                () => {
+                    document.getElementById(
+                        "lesson-test-info"
+                    ).innerHTML =
+                        `${course}&nbsp;&nbsp;L1~18`;
+                    
+                    gtag("event", "select_lesson_test", {
+                        course_name: course
+                    });
 
-           const lessonTestButton =
-    document.getElementById(
-        "lesson-test-button"
-    );
+                    const lessonTestButton =
+                        document.getElementById(
+                            "lesson-test-button"
+                        );
 
-lessonTestButton.dataset.course = course;
-lessonTestButton.className = "course-button";
-lessonTestButton.style.backgroundColor = "#ffff00";
-lessonTestButton.style.cursor = "pointer";
-lessonTestButton.disabled = false;
-lessonTestButton.style.display = "block";
-lessonTestButton.style.margin = "0 auto";
+                    lessonTestButton.dataset.course = course;
+                    lessonTestButton.className = "course-button";
+                    lessonTestButton.style.backgroundColor = "#ffff00";
+                    lessonTestButton.style.cursor = "pointer";
+                    lessonTestButton.disabled = false;
+                    lessonTestButton.style.display = "block";
+                    lessonTestButton.style.margin = "0 auto";
 
-updateLessonTestRanking(course);
+                    updateLessonTestRanking(course);
 
-document.getElementById(
-    "start-screen"
-).classList.add("hidden");
+                    document.getElementById(
+                        "start-screen"
+                    ).classList.add("hidden");
 
-            document.getElementById(
-                "section-screen"
-            ).classList.add("hidden");
+                    document.getElementById(
+                        "section-screen"
+                    ).classList.add("hidden");
 
-            document.getElementById(
-                "lesson-test-screen"
-            ).classList.remove("hidden");
+                    document.getElementById(
+                        "lesson-test-screen"
+                    ).classList.remove("hidden");
 
-            window.scrollTo(0, 0);
+                    window.scrollTo(0, 0);
+                }
+            );
         }
-    );
-}
 
         lessonContainer.appendChild(
             lesson18Button
@@ -426,23 +431,23 @@ function showSectionButtons(course, lesson1) {
     const sectionScreen =
         document.getElementById("section-screen");
 
-const container =
-    document.getElementById("section-buttons");
+    const container =
+        document.getElementById("section-buttons");
 
-container.innerHTML = "";
+    container.innerHTML = "";
 
-const sectionInfo =
-    document.createElement("div");
+    const sectionInfo =
+        document.createElement("div");
 
-sectionInfo.className =
-    "result-info";
+    sectionInfo.className =
+        "result-info";
 
-sectionInfo.innerHTML =
-    `${course}&nbsp;&nbsp;${lesson1}`;
+    sectionInfo.innerHTML =
+        `${course}&nbsp;&nbsp;${lesson1}`;
 
-container.appendChild(
-    sectionInfo
-);
+    container.appendChild(
+        sectionInfo
+    );
 
     const sections = [];
 
@@ -567,6 +572,7 @@ document.getElementById(
             document.getElementById(
                 "lesson-test-button"
             ).dataset.course;
+
         startLessonTest(course);
     }
 );
@@ -634,242 +640,248 @@ function startLessonTest(course) {
         return selected.slice(0, 3);
     }
 
-const selectBalancedQuestions = (
-    questions,
-    count
-) => {
+    const selectBalancedQuestions = (
+        questions,
+        count
+    ) => {
 
-    const groups =
-        displayedLessons.map(
-            lesson1 =>
-                questions.filter(
-                    question =>
-                        String(question.lesson1 || "").trim() === lesson1
-                )
+        const groups =
+            displayedLessons.map(
+                lesson1 =>
+                    questions.filter(
+                        question =>
+                            String(question.lesson1 || "").trim() === lesson1
+                    )
+            );
+
+        const selected = [];
+
+        const baseCount =
+            Math.floor(count / groups.length);
+
+        const remainder =
+            count % groups.length;
+
+        groups.forEach((group, index) => {
+
+            const target =
+                baseCount +
+                (index < remainder ? 1 : 0);
+
+            const shuffled = [...group];
+
+            shuffleArray(shuffled);
+
+            selected.push(
+                ...shuffled.slice(0, target)
+            );
+        });
+
+        return selected;
+    };
+
+    const section2Questions =
+        allQuestions.filter(
+            question =>
+                String(question.course || "").trim() === course &&
+                String(question.section || "").trim() === "Section2"
         );
 
-    const selected = [];
-
-    const baseCount =
-        Math.floor(count / groups.length);
-
-    const remainder =
-        count % groups.length;
-
-    groups.forEach((group, index) => {
-
-        const target =
-            baseCount +
-            (index < remainder ? 1 : 0);
-
-        const shuffled = [...group];
-
-        shuffleArray(shuffled);
-
-        selected.push(
-            ...shuffled.slice(0, target)
+    const selectedSection2Questions =
+        selectBalancedQuestions(
+            section2Questions,
+            12
         );
+
+    const section3Questions =
+        allQuestions.filter(
+            question =>
+                String(question.course || "").trim() === course &&
+                String(question.section || "").trim() === "Section3"
+        );
+
+    const section3Units = [];
+
+    section3Questions.forEach(question => {
+
+        const subQuestions =
+            parseSubQuestions(question.khmerQuestion);
+
+        const count =
+            subQuestions.length > 0
+                ? subQuestions.length
+                : 1;
+
+        section3Units.push({
+            question: question,
+            count: count
+        });
     });
 
-    return selected;
-};
+    const selectSection3Balanced = (
+        units,
+        targetCount
+    ) => {
 
-const section2Questions =
-    allQuestions.filter(
-        question =>
-            String(question.course || "").trim() === course &&
-            String(question.section || "").trim() === "Section2"
-    );
+        const groups =
+            displayedLessons.map(
+                lesson1 =>
+                    units.filter(
+                        unit =>
+                            String(
+                                unit.question.lesson1 || ""
+                            ).trim() === lesson1
+                    )
+            );
 
-const selectedSection2Questions =
-    selectBalancedQuestions(
-        section2Questions,
-        12
-    );
+        const selected = [];
+        let totalCount = 0;
 
-const section3Questions =
-    allQuestions.filter(
-        question =>
-            String(question.course || "").trim() === course &&
-            String(question.section || "").trim() === "Section3"
-    );
+        const targetPerGroup =
+            Math.floor(targetCount / groups.length);
 
-const section3Units = [];
+        groups.forEach(group => {
 
-section3Questions.forEach(question => {
+            const shuffled = [...group];
 
-const subQuestions =
-    parseSubQuestions(question.khmerQuestion);
+            shuffleArray(shuffled);
 
-    const count =
-        subQuestions.length > 0
-            ? subQuestions.length
-            : 1;
+            let groupCount = 0;
 
-    section3Units.push({
-        question: question,
-        count: count
-    });
-});
+            for (const unit of shuffled) {
 
-const selectSection3Balanced = (units, targetCount) => {
-
-    const groups =
-        displayedLessons.map(
-            lesson1 =>
-                units.filter(
-                    unit =>
-                        String(
-                            unit.question.lesson1 || ""
-                        ).trim() === lesson1
-                )
-        );
-
-    const selected = [];
-    let totalCount = 0;
-
-    const targetPerGroup =
-        Math.floor(targetCount / groups.length);
-
-    groups.forEach(group => {
-
-        const shuffled = [...group];
-
-        shuffleArray(shuffled);
-
-        let groupCount = 0;
-
-        for (const unit of shuffled) {
-
-            if (
-                groupCount + unit.count <=
-                targetPerGroup
-            ) {
-                selected.push(unit.question);
-                groupCount += unit.count;
-                totalCount += unit.count;
+                if (
+                    groupCount + unit.count <=
+                    targetPerGroup
+                ) {
+                    selected.push(unit.question);
+                    groupCount += unit.count;
+                    totalCount += unit.count;
+                }
             }
-        }
-    });
+        });
 
-    const remaining =
-        units.filter(
-            unit =>
-                !selected.includes(unit.question)
-        );
+        const remaining =
+            units.filter(
+                unit =>
+                    !selected.includes(unit.question)
+            );
 
-    shuffleArray(remaining);
+        shuffleArray(remaining);
 
-    for (const unit of remaining) {
+        for (const unit of remaining) {
 
-        if (totalCount >= targetCount) {
-            break;
-        }
-
-        selected.push(unit.question);
-        totalCount += unit.count;
-    }
-
-    return selected;
-};
-
-const selectedSection3Questions =
-    selectSection3Balanced(
-        section3Units,
-        12
-    );
-
-const section4Questions =
-    allQuestions.filter(
-        question =>
-            String(question.course || "").trim() === course &&
-            String(question.section || "").trim() === "Section4"
-    );
-
-const section4Units = [];
-
-section4Questions.forEach(question => {
-
-    const subQuestions =
-        parseSubQuestions(question.question);
-
-    const count =
-        subQuestions.length > 0
-            ? subQuestions.length
-            : 1;
-
-    section4Units.push({
-        question: question,
-        count: count
-    });
-});
-
-const selectSection4Balanced = (units, targetCount) => {
-
-    const groups =
-        displayedLessons.map(
-            lesson1 =>
-                units.filter(
-                    unit =>
-                        String(
-                            unit.question.lesson1 || ""
-                        ).trim() === lesson1
-                )
-        );
-
-    const selected = [];
-    let totalCount = 0;
-
-    const targetPerGroup =
-        Math.floor(targetCount / groups.length);
-
-    groups.forEach(group => {
-
-        const shuffled = [...group];
-
-        shuffleArray(shuffled);
-
-        let groupCount = 0;
-
-        for (const unit of shuffled) {
-
-            if (
-                groupCount + unit.count <=
-                targetPerGroup
-            ) {
-                selected.push(unit.question);
-                groupCount += unit.count;
-                totalCount += unit.count;
+            if (totalCount >= targetCount) {
+                break;
             }
-        }
-    });
 
-    const remaining =
-        units.filter(
-            unit =>
-                !selected.includes(unit.question)
+            selected.push(unit.question);
+            totalCount += unit.count;
+        }
+
+        return selected;
+    };
+
+    const selectedSection3Questions =
+        selectSection3Balanced(
+            section3Units,
+            12
         );
 
-    shuffleArray(remaining);
+    const section4Questions =
+        allQuestions.filter(
+            question =>
+                String(question.course || "").trim() === course &&
+                String(question.section || "").trim() === "Section4"
+        );
 
-    for (const unit of remaining) {
+    const section4Units = [];
 
-        if (totalCount >= targetCount) {
-            break;
+    section4Questions.forEach(question => {
+
+        const subQuestions =
+            parseSubQuestions(question.question);
+
+        const count =
+            subQuestions.length > 0
+                ? subQuestions.length
+                : 1;
+
+        section4Units.push({
+            question: question,
+            count: count
+        });
+    });
+
+    const selectSection4Balanced = (
+        units,
+        targetCount
+    ) => {
+
+        const groups =
+            displayedLessons.map(
+                lesson1 =>
+                    units.filter(
+                        unit =>
+                            String(
+                                unit.question.lesson1 || ""
+                            ).trim() === lesson1
+                    )
+            );
+
+        const selected = [];
+        let totalCount = 0;
+
+        const targetPerGroup =
+            Math.floor(targetCount / groups.length);
+
+        groups.forEach(group => {
+
+            const shuffled = [...group];
+
+            shuffleArray(shuffled);
+
+            let groupCount = 0;
+
+            for (const unit of shuffled) {
+
+                if (
+                    groupCount + unit.count <=
+                    targetPerGroup
+                ) {
+                    selected.push(unit.question);
+                    groupCount += unit.count;
+                    totalCount += unit.count;
+                }
+            }
+        });
+
+        const remaining =
+            units.filter(
+                unit =>
+                    !selected.includes(unit.question)
+            );
+
+        shuffleArray(remaining);
+
+        for (const unit of remaining) {
+
+            if (totalCount >= targetCount) {
+                break;
+            }
+
+            selected.push(unit.question);
+            totalCount += unit.count;
         }
 
-        selected.push(unit.question);
-        totalCount += unit.count;
-    }
+        return selected;
+    };
 
-    return selected;
-};
-
-const selectedSection4Questions =
-    selectSection4Balanced(
-        section4Units,
-        12
-    );
+    const selectedSection4Questions =
+        selectSection4Balanced(
+            section4Units,
+            12
+        );
 
     const section1Questions =
         allQuestions.filter(
@@ -897,22 +909,22 @@ const selectedSection4Questions =
                 String(question.englishQuestion || "").trim() === type3
         );
 
-const questions4 =
-    section1Questions.filter(
-        question =>
-            String(question.englishQuestion || "").trim() === type4 &&
-            String(question.sectionName || "").trim() === "かんじ"
-    );
+    const questions4 =
+        section1Questions.filter(
+            question =>
+                String(question.englishQuestion || "").trim() === type4 &&
+                String(question.sectionName || "").trim() === "かんじ"
+        );
 
-currentQuestions = [
-    ...selectThreeBalanced(questions1),
-    ...selectThreeBalanced(questions2),
-    ...selectThreeBalanced(questions3),
-    ...selectThreeBalanced(questions4),
-    ...selectedSection2Questions,
-    ...selectedSection3Questions,
-    ...selectedSection4Questions
-];
+    currentQuestions = [
+        ...selectThreeBalanced(questions1),
+        ...selectThreeBalanced(questions2),
+        ...selectThreeBalanced(questions3),
+        ...selectThreeBalanced(questions4),
+        ...selectedSection2Questions,
+        ...selectedSection3Questions,
+        ...selectedSection4Questions
+    ];
 
     currentQuestionIndex = 0;
 
@@ -1459,28 +1471,28 @@ function createChoiceGroups(
             let text = "";
             let image = "";
 
-if (
-    question.section === "Section4" &&
-    imageParts.length >= 2
-) {
-    if (i === 0) {
-        if (
-            /\.(png|jpg|jpeg|gif|webp)$/i.test(
-                imageParts[0]
-            )
-        ) {
-            image = imageParts[0];
-        } else {
-            text =
-                imageParts[0]
-                    .replace(/^image\//i, "")
-                    .trim();
-        }
-    } else if (i === 1) {
-        image =
-            imageParts[1];
-    }
-} else {
+            if (
+                question.section === "Section4" &&
+                imageParts.length >= 2
+            ) {
+                if (i === 0) {
+                    if (
+                        /\.(png|jpg|jpeg|gif|webp)$/i.test(
+                            imageParts[0]
+                        )
+                    ) {
+                        image = imageParts[0];
+                    } else {
+                        text =
+                            imageParts[0]
+                                .replace(/^image\//i, "")
+                                .trim();
+                    }
+                } else if (i === 1) {
+                    image =
+                        imageParts[1];
+                }
+            } else {
                 /*
                  * それ以外は従来どおり
                  */
@@ -1557,12 +1569,12 @@ function showChoices(
     const question =
         currentQuestions[questionIndex];
 
- const isLargeImageChoice =
-    question &&
-    (
-        question.section === "Section3" ||
-        question.section === "Section4"
-    );
+    const isLargeImageChoice =
+        question &&
+        (
+            question.section === "Section3" ||
+            question.section === "Section4"
+        );
 
     choices.forEach(
         choice => {
@@ -1572,10 +1584,10 @@ function showChoices(
             button.className =
                 "choice-button";
 
-if (
-    isLargeImageChoice &&
-    choice.image
-) {
+            if (
+                isLargeImageChoice &&
+                choice.image
+            ) {
                 button.classList.add(
                     "choice-with-image"
                 );
@@ -2093,27 +2105,27 @@ function calculateResult() {
                 100
             );
 
-saveBestScore(
-    selectedCourse,
-    selectedLesson,
-    selectedSection,
-    percentage
-);
-
-createCourseButtons();
-
-if (selectedLesson === "L1~18") {
-    saveLessonTestScore(
+    saveBestScore(
         selectedCourse,
+        selectedLesson,
+        selectedSection,
         percentage
     );
-}
 
-showResultScreen(
-    correctAnswers,
-    totalAnswers,
-    percentage
-);
+    createCourseButtons();
+
+    if (selectedLesson === "L1~18") {
+        saveLessonTestScore(
+            selectedCourse,
+            percentage
+        );
+    }
+
+    showResultScreen(
+        correctAnswers,
+        totalAnswers,
+        percentage
+    );
 }
 
 function showResultScreen(
@@ -2156,10 +2168,10 @@ function showResultScreen(
     resultInfo.className =
         "result-info";
 
-resultInfo.innerHTML =
-    selectedLesson === "L1~18"
-        ? `${selectedCourse}&nbsp;&nbsp;${selectedLesson}`
-        : `${selectedCourse}&nbsp;&nbsp;${selectedLesson}&nbsp;&nbsp;${selectedSection}`;
+    resultInfo.innerHTML =
+        selectedLesson === "L1~18"
+            ? `${selectedCourse}&nbsp;&nbsp;${selectedLesson}`
+            : `${selectedCourse}&nbsp;&nbsp;${selectedLesson}&nbsp;&nbsp;${selectedSection}`;
 
     resultTitle.insertAdjacentElement(
         "afterend",
