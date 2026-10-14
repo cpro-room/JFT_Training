@@ -380,9 +380,10 @@ function createCourseButtons() {
                     ).innerHTML =
                         `${course}&nbsp;&nbsp;L1~18`;
                     
-                    gtag("event", "select_lesson_test", {
-                        course_name: course
-                    });
+                   gtag("event", "select_section", {
+                   course_name: course,
+                   section_name: "L1~18"
+                        });
 
                     const lessonTestButton =
                         document.getElementById(
