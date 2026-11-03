@@ -424,8 +424,30 @@ function createCourseButtons() {
             lesson18Button
         );
 
-        container.appendChild(lessonContainer);
+              container.appendChild(lessonContainer);
     });
+
+    // 親ページへ戻るBackボタン
+    const backButton = document.createElement("button");
+
+    backButton.textContent = "Back";
+    backButton.style.display = "block";
+    backButton.style.margin = "30px auto 20px";
+    backButton.style.padding = "8px 20px";
+    backButton.style.backgroundColor = "#1976d2";
+    backButton.style.color = "white";
+    backButton.style.border = "none";
+    backButton.style.borderRadius = "6px";
+    backButton.style.fontSize = "18px";
+    backButton.style.fontWeight = "bold";
+    backButton.style.cursor = "pointer";
+
+    backButton.addEventListener("click", () => {
+        window.location.href =
+            "https://cpro-room.github.io/JP-Learning/";
+    });
+
+    container.appendChild(backButton);
 }
 
 function showSectionButtons(course, lesson1) {
