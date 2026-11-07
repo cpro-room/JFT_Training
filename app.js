@@ -80,6 +80,135 @@ function saveLessonTestScore(course, percentage) {
     );
 }
 
+function startSakuraAnimationIfQualified() {
+
+    const courses = ["A1", "A2.1"];
+
+    const allQualified = courses.every(course => {
+
+        let scores = [];
+
+        try {
+            scores = JSON.parse(
+                localStorage.getItem(
+                    `jft_lesson_test_scores_${course}`
+                ) || "[]"
+            );
+        } catch (error) {
+            scores = [];
+        }
+
+        const topThree =
+            scores
+                .map(Number)
+                .filter(score => Number.isFinite(score))
+                .sort((a, b) => b - a)
+                .slice(0, 3);
+
+        return (
+            topThree.length === 3 &&
+            topThree.every(score => score >= 90)
+        );
+    });
+
+    if (!allQualified) {
+        return;
+    }
+
+    if (window.sakuraInterval) {
+        return;
+    }
+
+    if (!document.getElementById("sakura-animation-style")) {
+
+        const style = document.createElement("style");
+
+        style.id = "sakura-animation-style";
+
+        style.textContent = `
+            @keyframes jft-sakura-fall {
+                0% {
+                    transform: translateY(-50px) rotate(0deg);
+                    opacity: 0.8;
+                }
+                100% {
+                    transform: translateY(100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+
+            .jft-sakura {
+                position: fixed;
+                top: -80px;
+                pointer-events: none;
+                color: pink;
+                animation-name: jft-sakura-fall;
+                animation-timing-function: linear;
+                z-index: 9999;
+                user-select: none;
+            }
+        `;
+
+        document.head.appendChild(style);
+    }
+
+    const createSakura = () => {
+
+        const sakura = document.createElement("div");
+
+        sakura.className = "jft-sakura";
+        sakura.textContent = "🌸";
+
+        sakura.style.left =
+            Math.random() * 100 + "vw";
+
+        const duration = 8 + Math.random() * 8;
+
+        sakura.style.animationDuration =
+            duration + "s";
+
+        sakura.style.fontSize =
+            (16 + Math.random() * 24) + "px";
+
+        sakura.addEventListener(
+            "animationend",
+            () => sakura.remove()
+        );
+
+        document.body.appendChild(sakura);
+    };
+
+    const isTargetScreenVisible = () => {
+
+        const startScreen =
+            document.getElementById("start-screen");
+
+        const sectionScreen =
+            document.getElementById("section-screen");
+
+        return (
+            (startScreen &&
+                !startScreen.classList.contains("hidden")) ||
+            (sectionScreen &&
+                !sectionScreen.classList.contains("hidden"))
+        );
+    };
+
+    if (isTargetScreenVisible()) {
+        createSakura();
+    }
+
+    window.sakuraInterval = setInterval(() => {
+
+        if (!isTargetScreenVisible()) {
+            return;
+        }
+
+        createSakura();
+
+    }, 800);
+}
+
 function updateLessonTestRanking(course) {
     const button =
         document.getElementById(
@@ -2147,11 +2276,18 @@ function calculateResult() {
         );
     }
 
-    showResultScreen(
-        correctAnswers,
-        totalAnswers,
-        percentage
-    );
+showResultScreen(
+    correctAnswers,
+    totalAnswers,
+    percentage
+);
+
+if (
+    selectedLesson === "L1~18" &&
+    (selectedCourse === "A1" || selectedCourse === "A2.1")
+) {
+    startSakuraAnimationIfQualified();
+}
 }
 
 function showResultScreen(
@@ -2556,8 +2692,10 @@ function createDogAnimation() {
     const isFatDog =
         totalScore > 3000;
 
-    const dogPrefix =
-        isFatDog
+  const dogPrefix =
+    totalScore >= 3600
+        ? "image/dog3_"
+        : isFatDog
             ? "image/dog2_"
             : "image/dog_";
 
@@ -2686,3 +2824,4 @@ const walkingFrames = [
 
 createDogAnimation();
 loadQuestions();
+startSakuraAnimationIfQualified();
