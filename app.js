@@ -244,6 +244,36 @@ function startSakuraAnimationIfQualified() {
             window.sakuraVisibilityHandler
         );
     }
+
+    if (!window.sakuraScreenObserver) {
+
+        window.sakuraScreenObserver =
+            new MutationObserver(() => {
+
+                if (!isTargetScreenVisible()) {
+
+                    document.querySelectorAll(".jft-sakura")
+                        .forEach(sakura => sakura.remove());
+
+                }
+            });
+
+        ["start-screen", "section-screen"].forEach(id => {
+
+            const screen = document.getElementById(id);
+
+            if (screen) {
+                window.sakuraScreenObserver.observe(
+                    screen,
+                    {
+                        attributes: true,
+                        attributeFilter: ["class"]
+                    }
+                );
+            }
+        });
+    }
+
 }
 
 function updateLessonTestRanking(course) {
