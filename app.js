@@ -194,19 +194,56 @@ function startSakuraAnimationIfQualified() {
         );
     };
 
-    if (isTargetScreenVisible()) {
-        createSakura();
-    }
+     const startSakura = () => {
 
-    window.sakuraInterval = setInterval(() => {
-
-        if (!isTargetScreenVisible()) {
-            return;
+        if (window.sakuraInterval) {
+            clearInterval(window.sakuraInterval);
         }
 
-        createSakura();
+        if (isTargetScreenVisible()) {
+            createSakura();
+        }
 
-    }, 800);
+        window.sakuraInterval = setInterval(() => {
+
+            if (!isTargetScreenVisible()) {
+                return;
+            }
+
+            createSakura();
+
+        }, 800);
+    };
+
+    if (document.hidden) {
+        return;
+    }
+
+    startSakura();
+
+    if (!window.sakuraVisibilityHandler) {
+
+        window.sakuraVisibilityHandler = () => {
+
+            if (document.hidden) {
+
+                clearInterval(window.sakuraInterval);
+                window.sakuraInterval = null;
+
+                document.querySelectorAll(".jft-sakura")
+                    .forEach(sakura => sakura.remove());
+
+            } else {
+
+                startSakura();
+            }
+        };
+
+        document.addEventListener(
+            "visibilitychange",
+            window.sakuraVisibilityHandler
+        );
+    }
 }
 
 function updateLessonTestRanking(course) {
