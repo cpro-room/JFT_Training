@@ -2572,9 +2572,16 @@ function createDogAnimation() {
     dog.style.bottom = "0px";
     dog.style.transformOrigin = "center center";
 
-    container.appendChild(dog);
+container.appendChild(dog);
 
-    const walkingFrames = [
+if (totalScore < 300) {
+    dog.src = `${dogPrefix}4.png`;
+    dog.style.left = "auto";
+    dog.style.right = "0px";
+    return;
+}
+
+const walkingFrames = [
         `${dogPrefix}1.png`,
         `${dogPrefix}2.png`,
         `${dogPrefix}3.png`
