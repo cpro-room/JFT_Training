@@ -2269,6 +2269,10 @@ function calculateResult() {
 
     createCourseButtons();
 
+    if (selectedLesson !== "L1~18") {
+        createDogAnimation();
+    }
+
     if (selectedLesson === "L1~18") {
         saveLessonTestScore(
             selectedCourse,
@@ -2658,12 +2662,14 @@ function shuffleArray(array) {
 }
 
 function createDogAnimation() {
-    const container =
-        document.getElementById("dog-animation");
+const container =
+    document.getElementById("dog-animation");
 
-    if (!container) {
-        return;
-    }
+if (!container) {
+    return;
+}
+
+container.innerHTML = "";
 
     const dog =
         document.createElement("img");
